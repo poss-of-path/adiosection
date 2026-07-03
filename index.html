@@ -6,25 +6,32 @@
 <title>Adiosection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet">
 <style>
   :root{
     --blue:#0063c3;
     --blue-dark:#004a94;
+    --blue-deep:#002f5c;
+    --blue-tint:#dce9fb;
     --yellow:#f2c94c;
+    --yellow-dark:#d9a520;
+    --yellow-tint:#fdf1d3;
     --cream:#fcf9ee;
     --dark:#252525;
-    --radius-lg:28px;
-    --radius-md:20px;
-    --radius-sm:14px;
+    --white:#ffffff;
+    --radius-lg:32px;
+    --radius-md:24px;
+    --radius-sm:16px;
     --max-w:480px;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
   }
 
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--cream);
-    font-family:'Inter',sans-serif;
+    font-family:var(--font-body);
     color:var(--dark);
     display:flex;
     justify-content:center;
@@ -36,100 +43,129 @@
     max-width:var(--max-w);
     min-height:100vh;
     position:relative;
-    background:var(--cream);
+    background:
+      radial-gradient(circle at 8px 8px, rgba(0,99,195,.08) 1.5px, transparent 1.6px) 0 0/22px 22px,
+      var(--cream);
     overflow-x:hidden;
   }
+
+  /* ---------- reusable eyebrow / tag pill ---------- */
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--yellow);
+    color:var(--blue-deep);
+    font-family:var(--font-body);
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    padding:7px 14px;
+    border-radius:999px;
+    border:2px solid var(--dark);
+    transform:rotate(-2deg);
+    box-shadow:2px 3px 0 var(--dark);
+  }
+  .eyebrow.on-blue{background:var(--cream); color:var(--blue-deep);}
 
   .view{
     display:none;
     flex-direction:column;
     min-height:100vh;
-    padding:20px 20px 48px;
-    animation:fadeIn .35s ease;
+    padding:20px 20px 44px;
+    position:relative;
+    z-index:1;
   }
-  .view.active{display:flex;}
+  .view.active{display:flex; animation:fadeIn .35s ease;}
 
   @keyframes fadeIn{
     from{opacity:0; transform:translateY(10px);}
     to{opacity:1; transform:translateY(0);}
   }
 
-  .view#view-landing{
-    justify-content:center;
+  /* ---------- decorative blobs ---------- */
+  .bg-blob{position:absolute; border-radius:50%; filter:blur(46px); opacity:.4; z-index:0; pointer-events:none;}
+  .bg-blob.b1{width:200px;height:200px;background:var(--yellow); top:-50px; right:-60px;}
+  .bg-blob.b2{width:240px;height:240px;background:var(--blue); bottom:60px; left:-90px; opacity:.18;}
+
+  /* ---------- Header pill ---------- */
+  .topbar{
+    background:rgba(255,255,255,.92);
+    border:2px solid var(--dark);
+    border-radius:999px;
+    padding:12px 20px;
+    text-align:center;
+    font-size:12.5px;
+    font-weight:400;
+    color:var(--dark);
+    box-shadow:2px 3px 0 var(--dark);
+    margin-bottom:22px;
+    flex-shrink:0;
   }
+  .topbar b{font-weight:800; font-family:var(--font-display); font-style:italic;}
+
+  /* ================= LANDING ================= */
+  .view#view-landing{justify-content:center;}
   .landing-inner{
     display:flex;
     flex-direction:column;
     width:100%;
-  }
-  .landing-inner .btn-primary{
-    margin-top:4px;
+    position:relative;
+    z-index:1;
   }
 
-  /* ---------- Header pill ---------- */
-  .topbar{
-    background:#fff;
-    border-radius:999px;
-    padding:16px 22px;
-    text-align:center;
-    font-size:14px;
-    font-weight:400;
-    color:var(--dark);
-    box-shadow:0 2px 10px rgba(0,0,0,0.04);
-    margin-bottom:28px;
-    flex-shrink:0;
+  .hero-card{
+    background:var(--blue);
+    background-image:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 2px, transparent 2px 26px);
+    border-radius:var(--radius-lg);
+    border:3px solid var(--dark);
+    padding:22px 22px 34px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:6px 8px 0 var(--dark);
   }
-  .topbar b{font-weight:800;}
-
-  /* ---------- Logo ---------- */
+  .hero-card .topbar{background:rgba(255,255,255,.95); margin-bottom:18px; border:2px solid var(--dark);}
+  .hero-ring{
+    position:absolute;
+    width:150px; height:150px;
+    border-radius:50%;
+    border:2px dashed rgba(255,255,255,.4);
+    top:-40px; left:-40px;
+  }
+  .hero-ring.b2{
+    width:90px; height:90px;
+    top:auto; left:auto;
+    bottom:-30px; right:-20px;
+    border-color:rgba(242,201,76,.55);
+  }
   .logo-wrap{
     display:flex;
     justify-content:center;
-    margin-bottom:20px;
+    margin-bottom:14px;
+    position:relative;
+    z-index:1;
   }
   .logo-wrap img{
-    width:230px;
-    max-width:70%;
+    width:210px;
+    max-width:78%;
     height:auto;
+    filter:brightness(0) invert(1);
   }
-
-  /* ---------- Marquee icons ---------- */
-  .marquee{
-    width:100%;
-    overflow:hidden;
-    margin:6px 0 28px;
-    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-    mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-  }
-  .marquee-track{
-    display:flex;
-    width:max-content;
-    animation:scrollLeft 14s linear infinite;
-  }
-  .marquee-track img{
-    width:78px;
-    height:78px;
-    object-fit:contain;
-    margin:0 12px;
-    flex-shrink:0;
-  }
-  @keyframes scrollLeft{
-    from{transform:translateX(0);}
-    to{transform:translateX(-50%);}
-  }
-
-  /* ---------- Landing copy ---------- */
   .landing-quote{
     text-align:center;
-    font-size:17px;
-    line-height:1.5;
-    font-weight:400;
-    color:var(--dark);
-    margin:8px 0 32px;
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:19px;
+    line-height:1.45;
+    font-weight:500;
+    color:var(--cream);
+    margin:2px 0 26px;
+    position:relative;
+    z-index:1;
   }
-  .landing-quote b{font-weight:800; font-style:italic;}
-
-  .spacer{flex:1;}
+  .landing-quote b{font-weight:700; color:var(--yellow);}
 
   .btn-primary{
     display:inline-flex;
@@ -137,71 +173,166 @@
     justify-content:center;
     align-self:center;
     width:auto;
-    background:var(--blue);
-    color:var(--yellow);
-    border:none;
+    background:var(--yellow);
+    color:var(--blue-deep);
+    border:3px solid var(--dark);
     border-radius:999px;
-    font-family:'Inter',sans-serif;
+    font-family:var(--font-body);
     font-weight:800;
-    font-size:19px;
-    letter-spacing:0.5px;
-    padding:15px 56px;
+    font-size:16px;
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    padding:14px 48px;
     text-align:center;
     cursor:pointer;
-    transition:transform .15s ease, background .15s ease;
+    position:relative;
+    z-index:1;
+    box-shadow:4px 5px 0 var(--dark);
+    transition:transform .15s ease, box-shadow .15s ease;
   }
-  .btn-primary:active{transform:scale(0.97); background:var(--blue-dark);}
+  .btn-primary:active{transform:translate(3px,4px); box-shadow:1px 1px 0 var(--dark);}
 
-  /* ---------- Menu grid ---------- */
+  .gang-label{
+    display:block;
+    text-align:center;
+    margin:28px 0 14px;
+  }
+  .gang-label .eyebrow{margin:0 auto;}
+
+  /* ---------- Marquee icons ---------- */
+  .marquee{
+    width:100%;
+    overflow:hidden;
+    padding:8px 0 4px;
+    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+  .marquee-track{
+    display:flex;
+    width:max-content;
+    animation:scrollLeft 14s linear infinite;
+    align-items:flex-end;
+  }
+  .marquee-track img{
+    width:76px;
+    height:76px;
+    object-fit:contain;
+    margin:0 12px;
+    flex-shrink:0;
+    border-radius:20px;
+    border:2.5px solid var(--dark);
+    padding:8px;
+    box-shadow:3px 4px 0 rgba(37,37,37,.9);
+  }
+  .marquee-track img:nth-child(4n+1){transform:rotate(-6deg); background:var(--yellow-tint);}
+  .marquee-track img:nth-child(4n+2){transform:rotate(4deg); background:var(--blue-tint);}
+  .marquee-track img:nth-child(4n+3){transform:rotate(-3deg); background:var(--cream);}
+  .marquee-track img:nth-child(4n+4){transform:rotate(5deg); background:var(--yellow-tint);}
+  @keyframes scrollLeft{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* ================= MENU ================= */
+  .menu-header{margin-bottom:20px;}
+  .menu-header .logo-wrap img{filter:none; width:190px;}
+  .menu-sub{
+    text-align:center;
+    font-size:15px;
+    font-weight:700;
+    color:var(--dark);
+    margin-top:6px;
+  }
+  .menu-sub span{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-weight:700;
+    color:var(--blue-deep);
+    text-decoration:underline;
+    text-decoration-style:wavy;
+    text-decoration-color:var(--yellow-dark);
+    text-underline-offset:4px;
+  }
+
   .menu-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:16px;
-    margin-top:8px;
+    margin-top:20px;
+    position:relative;
+    z-index:1;
   }
   .menu-card{
     border-radius:var(--radius-md);
-    padding:18px 16px 18px;
+    padding:16px 14px 16px;
     position:relative;
     cursor:pointer;
-    border:none;
+    border:3px solid var(--dark);
     text-align:left;
-    font-family:'Inter',sans-serif;
+    font-family:var(--font-body);
     display:flex;
     flex-direction:column;
-    min-height:180px;
-    transition:transform .15s ease;
+    min-height:198px;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:5px 6px 0 var(--dark);
+    overflow:visible;
   }
-  .menu-card:active{transform:scale(0.96);}
+  .menu-card:active{transform:translate(3px,4px); box-shadow:1px 1px 0 var(--dark);}
   .menu-card.blue{background:var(--blue); color:var(--cream);}
   .menu-card.yellow{background:var(--yellow); color:var(--dark);}
 
   .menu-card .badge{
     position:absolute;
-    top:12px;
-    right:12px;
-    width:30px;
-    height:30px;
+    top:-12px;
+    right:-10px;
+    width:34px;
+    height:34px;
     border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:14px;
+    border:2.5px solid var(--dark);
+    transform:rotate(-10deg);
+    box-shadow:2px 3px 0 var(--dark);
   }
-  .menu-card.blue .badge{background:var(--yellow); color:var(--blue);}
-  .menu-card.yellow .badge{background:var(--blue); color:var(--yellow);}
+  .menu-card.blue .badge{background:var(--yellow); color:var(--blue-deep);}
+  .menu-card.yellow .badge{background:var(--cream); color:var(--blue-deep);}
 
-  .menu-card img{
-    width:68px;
-    height:68px;
+  .menu-card .sticker{
+    position:absolute;
+    bottom:-10px;
+    left:-8px;
+    width:34px;
+    height:34px;
     object-fit:contain;
-    margin:14px 0 auto;
-    align-self:center;
+    transform:rotate(14deg);
+    filter:drop-shadow(2px 3px 0 rgba(37,37,37,.9));
+  }
+
+  .icon-stage{
+    width:78px;
+    height:78px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:4px auto 10px;
+    border:2.5px solid var(--dark);
+  }
+  .menu-card.blue .icon-stage{background:var(--cream);}
+  .menu-card.yellow .icon-stage{background:var(--white);}
+  .menu-card img.center-icon{
+    width:44px;
+    height:44px;
+    object-fit:contain;
   }
   .menu-card h3{
-    font-size:17px;
-    font-weight:800;
-    margin:10px 0 2px;
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:18px;
+    font-weight:700;
+    margin:4px 0 4px;
   }
   .menu-card p{
     font-size:12.5px;
@@ -210,15 +341,231 @@
     opacity:0.85;
   }
 
-  /* ---------- Mini logo (sub-pages) ---------- */
-  .mini-logo{
-    display:flex;
-    justify-content:center;
-    margin-bottom:18px;
+  .footer-note{
+    text-align:center;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.3px;
+    color:var(--blue-deep);
+    opacity:0.65;
+    margin-top:26px;
   }
-  .mini-logo img{
-    width:110px;
+  .spacer{flex:1;}
+
+  /* ================= SUB PAGE BANNER ================= */
+  .page-banner{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border-radius:var(--radius-md);
+    border:3px solid var(--dark);
+    padding:16px 20px;
+    margin-bottom:26px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:5px 6px 0 var(--dark);
+  }
+  .page-banner.blue{background:var(--blue);}
+  .page-banner.yellow{background:var(--yellow);}
+
+  .back-btn{
+    background:var(--cream);
+    border:2.5px solid var(--dark);
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:2px 3px 0 var(--dark);
+    flex-shrink:0;
+    position:relative;
+    z-index:1;
+  }
+  .back-btn svg{width:18px; height:18px;}
+
+  .page-title{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:23px;
+    font-weight:700;
+    position:relative;
+    z-index:1;
+  }
+  .page-banner.blue .page-title{color:var(--cream);}
+  .page-banner.yellow .page-title{color:var(--blue-deep);}
+
+  .banner-icon{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%) rotate(-12deg);
+    width:52px;
+    height:52px;
+    object-fit:contain;
+    opacity:.9;
+  }
+
+  /* ---------- Concept page layout ---------- */
+  .concept-body{
+    overflow:hidden;
+  }
+  .concept-logo{
+    float:left;
+    width:140px;
+    margin:0 18px 12px 0;
+    border-radius:var(--radius-sm);
+    border:3px solid var(--dark);
+    background:var(--blue);
+    padding:14px;
+    box-shadow:4px 5px 0 var(--dark);
+  }
+  .concept-logo img{
+    width:100%;
     height:auto;
+    display:block;
+    filter:brightness(0) invert(1);
+  }
+  .concept-body p{
+    font-size:14.5px;
+    line-height:1.7;
+    font-weight:400;
+    margin:0 0 14px;
+    color:var(--dark);
+  }
+  .concept-body i{font-family:var(--font-display); font-style:italic; font-weight:700;}
+
+  .pull-quote{
+    clear:both;
+    position:relative;
+    background:var(--blue);
+    border:3px solid var(--dark);
+    border-radius:var(--radius-md);
+    padding:26px 24px 22px;
+    margin-top:12px;
+    font-family:var(--font-display);
+    font-size:19px;
+    line-height:1.4;
+    font-weight:600;
+    font-style:italic;
+    text-align:center;
+    color:var(--cream);
+    box-shadow:5px 6px 0 var(--dark);
+  }
+  .pull-quote::before{
+    content:"“";
+    position:absolute;
+    top:-6px; left:16px;
+    font-family:var(--font-display);
+    font-size:64px;
+    font-weight:700;
+    color:var(--yellow);
+    line-height:1;
+  }
+
+  /* ---------- lists (reg / join) ---------- */
+  .reg-intro, .join-intro{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:var(--blue-deep);
+  }
+  .reg-list, .join-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .reg-list li, .join-list li{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    border-radius:var(--radius-sm);
+    border:2.5px solid var(--dark);
+    padding:15px 16px;
+    font-size:14px;
+    line-height:1.55;
+    font-weight:400;
+    box-shadow:3px 4px 0 var(--dark);
+  }
+  .reg-list li:nth-child(4n+1), .join-list li:nth-child(4n+1){background:var(--blue); color:var(--cream);}
+  .reg-list li:nth-child(4n+2), .join-list li:nth-child(4n+2){background:var(--yellow-tint); color:var(--dark);}
+  .reg-list li:nth-child(4n+3), .join-list li:nth-child(4n+3){background:var(--yellow); color:var(--dark);}
+  .reg-list li:nth-child(4n+4), .join-list li:nth-child(4n+4){background:var(--blue-tint); color:var(--dark);}
+
+  .reg-num, .join-num{
+    flex-shrink:0;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:var(--cream);
+    border:2px solid var(--dark);
+    color:var(--blue-deep);
+    font-weight:800;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform:rotate(-8deg);
+    box-shadow:2px 3px 0 var(--dark);
+  }
+
+  /* ---------- Caretaker ---------- */
+  .ct-list{
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+  .ct-card{
+    border-radius:var(--radius-lg);
+    border:3px solid var(--dark);
+    padding:24px 16px 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    position:relative;
+    box-shadow:5px 6px 0 var(--dark);
+  }
+  .ct-card:nth-child(odd){background:var(--blue-tint);}
+  .ct-card:nth-child(even){background:var(--yellow-tint);}
+  .ct-card img{
+    width:64%;
+    max-width:220px;
+    height:auto;
+    object-fit:contain;
+    border-radius:var(--radius-md);
+    border:2.5px solid var(--dark);
+    background:var(--white);
+  }
+  .ct-name{
+    display:inline-block;
+    font-family:var(--font-display);
+    font-style:italic;
+    color:var(--blue-deep);
+    background:var(--yellow);
+    border:2px solid var(--dark);
+    padding:4px 18px;
+    border-radius:999px;
+    font-size:20px;
+    font-weight:700;
+    margin-top:16px;
+    transform:rotate(-1.5deg);
+    box-shadow:2px 3px 0 var(--dark);
+  }
+  .ct-role{
+    color:var(--dark);
+    opacity:0.6;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    margin-top:8px;
   }
 
   /* ---------- Bottom nav (back + home icon buttons) ---------- */
@@ -231,166 +578,20 @@
     flex-shrink:0;
   }
   .icon-btn{
-    width:56px;
-    height:56px;
+    width:54px;
+    height:54px;
     border-radius:50%;
     background:var(--blue);
-    border:none;
+    border:2.5px solid var(--dark);
     display:flex;
     align-items:center;
     justify-content:center;
     cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,0.12);
-    transition:transform .15s ease, background .15s ease;
+    box-shadow:3px 4px 0 var(--dark);
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
   }
-  .icon-btn:active{transform:scale(0.92); background:var(--blue-dark);}
-  .icon-btn svg{width:24px; height:24px;}
-
-  /* ---------- Sub page ---------- */
-  .back-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:18px;
-  }
-  .back-btn{
-    background:#fff;
-    border:none;
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    box-shadow:0 2px 8px rgba(0,0,0,0.06);
-    flex-shrink:0;
-  }
-  .back-btn svg{width:18px; height:18px;}
-  .page-title{
-    font-size:22px;
-    font-weight:800;
-    color:var(--blue);
-  }
-
-  .page-icon{
-    display:flex;
-    justify-content:center;
-    margin-bottom:18px;
-  }
-  .page-icon img{width:84px; height:84px; object-fit:contain;}
-
-  /* ---------- Concept page layout ---------- */
-  .concept-body{
-    overflow:hidden; /* contain the float */
-  }
-  .concept-logo{
-    float:left;
-    width:150px;
-    margin:0 18px 12px 0;
-  }
-  .concept-logo img{
-    width:100%;
-    height:auto;
-    display:block;
-  }
-  .concept-body p{
-    font-size:14.5px;
-    line-height:1.65;
-    font-weight:400;
-    margin:0 0 14px;
-    color:var(--dark);
-  }
-  .concept-body i{font-style:italic; font-weight:700;}
-
-  .body-text{
-    font-size:15px;
-    line-height:1.7;
-    font-weight:400;
-    color:var(--dark);
-  }
-  .body-text p{margin:0 0 16px;}
-  .body-text b i, .body-text i{font-style:italic; font-weight:700;}
-
-  .reg-list, .join-list{
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-  }
-  .reg-list li, .join-list li{
-    display:flex;
-    gap:14px;
-    background:#fff;
-    border-radius:var(--radius-sm);
-    padding:16px;
-    font-size:14.5px;
-    line-height:1.55;
-    font-weight:400;
-    box-shadow:0 2px 8px rgba(0,0,0,0.04);
-  }
-  .reg-num, .join-num{
-    flex-shrink:0;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:var(--blue);
-    color:var(--yellow);
-    font-weight:800;
-    font-size:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .reg-intro, .join-intro{
-    font-size:15px;
-    font-weight:600;
-    margin-bottom:18px;
-    color:var(--dark);
-  }
-
-  /* ---------- Caretaker ---------- */
-  .ct-list{
-    display:flex;
-    flex-direction:column;
-    gap:32px;
-  }
-  .ct-card{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-  }
-  .ct-card img{
-    width:72%;
-    max-width:260px;
-    height:auto;
-    object-fit:contain;
-  }
-  .ct-name{
-    color:var(--blue);
-    font-size:22px;
-    font-weight:800;
-    margin-top:14px;
-  }
-  .ct-role{
-    color:var(--dark);
-    opacity:0.6;
-    font-size:13px;
-    font-weight:600;
-    margin-top:2px;
-  }
-
-  .footer-note{
-    text-align:center;
-    font-size:12px;
-    font-weight:400;
-    color:var(--dark);
-    opacity:0.55;
-    margin-top:32px;
-  }
+  .icon-btn:active{transform:translate(2px,3px); box-shadow:1px 1px 0 var(--dark); background:var(--blue-dark);}
+  .icon-btn svg{width:22px; height:22px;}
 </style>
 </head>
 <body>
@@ -398,13 +599,25 @@
 
   <!-- ===================== VIEW 1: LANDING ===================== -->
   <section class="view active" id="view-landing">
-    <div class="landing-inner">
-      <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
 
-      <div class="logo-wrap">
-        <img src="assets/logo.png" alt="Adiosection logo">
+    <div class="landing-inner">
+      <div class="hero-card">
+        <div class="hero-ring"></div>
+        <div class="hero-ring b2"></div>
+        <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
+
+        <div class="logo-wrap">
+          <img src="assets/logo.png" alt="Adiosection logo">
+        </div>
+
+        <p class="landing-quote">And perhaps, the only thing left to do is say,<br><b>Adios</b>.</p>
+
+        <button class="btn-primary" onclick="goTo('view-menu')">START</button>
       </div>
 
+      <p class="gang-label"><span class="eyebrow">say hi to the gang</span></p>
       <div class="marquee">
         <div class="marquee-track">
           <img src="assets/icon1.png" alt="">
@@ -417,48 +630,53 @@
           <img src="assets/icon4.png" alt="">
         </div>
       </div>
-
-      <p class="landing-quote">And perhaps, the only thing left to do is say,<br><b>Adios</b>.</p>
-
-      <button class="btn-primary" onclick="goTo('view-menu')">START</button>
     </div>
   </section>
 
   <!-- ===================== VIEW 2: MENU ===================== -->
   <section class="view" id="view-menu">
+    <div class="bg-blob b1"></div>
+
     <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
 
-    <div class="logo-wrap">
-      <img src="assets/logo.png" alt="Adiosection logo">
+    <div class="menu-header">
+      <div class="logo-wrap">
+        <img src="assets/logo.png" alt="Adiosection logo">
+      </div>
+      <p class="menu-sub">Pick a card, <span>get to know us</span>.</p>
     </div>
 
     <div class="menu-grid">
       <button class="menu-card blue" onclick="goTo('view-concept')">
         <span class="badge">★</span>
-        <img src="assets/icon1.png" alt="">
+        <div class="icon-stage"><img class="center-icon" src="assets/icon1.png" alt=""></div>
         <h3>Concept?</h3>
         <p>Get to know us more!</p>
+        <img class="sticker" src="assets/icon3.png" alt="">
       </button>
 
       <button class="menu-card yellow" onclick="goTo('view-caretaker')">
         <span class="badge">◐</span>
-        <img src="assets/icon2.png" alt="">
+        <div class="icon-stage"><img class="center-icon" src="assets/icon2.png" alt=""></div>
         <h3>Hello, Caretaker!</h3>
         <p>The people behind all of these.</p>
+        <img class="sticker" src="assets/icon4.png" alt="">
       </button>
 
       <button class="menu-card yellow" onclick="goTo('view-regulations')">
         <span class="badge">♥</span>
-        <img src="assets/icon4.png" alt="">
+        <div class="icon-stage"><img class="center-icon" src="assets/icon4.png" alt=""></div>
         <h3>Regulations!</h3>
         <p>I'd like to let you know it first.</p>
+        <img class="sticker" src="assets/icon2.png" alt="">
       </button>
 
       <button class="menu-card blue" onclick="goTo('view-join')">
         <span class="badge">✿</span>
-        <img src="assets/icon3.png" alt="">
+        <div class="icon-stage"><img class="center-icon" src="assets/icon3.png" alt=""></div>
         <h3>How to Join?</h3>
         <p>Can you perhaps take a look?</p>
+        <img class="sticker" src="assets/icon1.png" alt="">
       </button>
     </div>
 
@@ -478,11 +696,12 @@
 
   <!-- ===================== VIEW 3: CONCEPT ===================== -->
   <section class="view" id="view-concept">
-    <div class="back-row">
+    <div class="page-banner blue">
       <button class="back-btn" onclick="goTo('view-menu')">
         <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <span class="page-title">Concept?</span>
+      <img class="banner-icon" src="assets/icon1.png" alt="">
     </div>
 
     <div class="concept-body">
@@ -492,8 +711,9 @@
       <p>We're only human, <i>after all</i>.</p>
       <p>You know what? The good thing about time is&hellip; it never stands still. 젊음은 가 아픔도 지나가. No matter how endless today may feel, tomorrow always finds its way to you.</p>
       <p>So keep going. Some days may feel heavier than others, but every step counts. One day, you'll look back and realize the weight you've been carrying is no longer yours to bear.</p>
-      <p>And perhaps, the only thing left to do is say, "<i>Adios</i>."</p>
     </div>
+
+    <p class="pull-quote">And perhaps, the only thing left to do is say, "Adios."</p>
 
     <div class="nav-footer">
       <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
@@ -507,13 +727,12 @@
 
   <!-- ===================== VIEW 4: CARETAKER ===================== -->
   <section class="view" id="view-caretaker">
-    <div class="mini-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
-
-    <div class="back-row">
+    <div class="page-banner yellow">
       <button class="back-btn" onclick="goTo('view-menu')">
         <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <span class="page-title">Hello, Caretaker!</span>
+      <img class="banner-icon" src="assets/icon2.png" alt="">
     </div>
 
     <p class="reg-intro" style="text-align:center;">The people behind all of these.</p>
@@ -521,24 +740,18 @@
     <div class="ct-list">
       <div class="ct-card">
         <img src="assets/ct1.png" alt="Malik">
-        <div>
-          <div class="ct-name">Malik</div>
-          <div class="ct-role">Caretaker</div>
-        </div>
+        <div class="ct-name">Malik</div>
+        <div class="ct-role">Caretaker</div>
       </div>
       <div class="ct-card">
         <img src="assets/ct2.png" alt="Luka">
-        <div>
-          <div class="ct-name">Luka</div>
-          <div class="ct-role">Caretaker</div>
-        </div>
+        <div class="ct-name">Luka</div>
+        <div class="ct-role">Caretaker</div>
       </div>
       <div class="ct-card">
         <img src="assets/ct3.png" alt="Heri">
-        <div>
-          <div class="ct-name">Heri</div>
-          <div class="ct-role">Caretaker</div>
-        </div>
+        <div class="ct-name">Heri</div>
+        <div class="ct-role">Caretaker</div>
       </div>
     </div>
 
@@ -554,13 +767,12 @@
 
   <!-- ===================== VIEW 5: REGULATIONS ===================== -->
   <section class="view" id="view-regulations">
-    <div class="mini-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
-
-    <div class="back-row">
+    <div class="page-banner blue">
       <button class="back-btn" onclick="goTo('view-menu')">
         <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <span class="page-title">Regulations!</span>
+      <img class="banner-icon" src="assets/icon4.png" alt="">
     </div>
 
     <p class="reg-intro">Thinking of joining adiosection? Make sure you've read and understood all the regulations below first!</p>
@@ -587,16 +799,15 @@
 
   <!-- ===================== VIEW 6: HOW TO JOIN ===================== -->
   <section class="view" id="view-join">
-    <div class="mini-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
-
-    <div class="back-row">
+    <div class="page-banner yellow">
       <button class="back-btn" onclick="goTo('view-menu')">
         <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <span class="page-title">How to Join?</span>
+      <img class="banner-icon" src="assets/icon3.png" alt="">
     </div>
 
-    <p class="reg-intro">Can you perhaps take a look? Here's how it works:</p>
+    <p class="join-intro">Can you perhaps take a look? Here's how it works:</p>
 
     <ul class="join-list">
       <li><span class="join-num">1</span><span>Make sure adiosection is the only account you're following.</span></li>
