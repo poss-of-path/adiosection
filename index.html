@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Adiosection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#0063c3;
+    --blue-dark:#004a94;
+    --yellow:#f2c94c;
+    --cream:#fcf9ee;
+    --dark:#252525;
+    --radius-lg:28px;
+    --radius-md:20px;
+    --radius-sm:14px;
+    --max-w:480px;
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    font-family:'Inter',sans-serif;
+    color:var(--dark);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+
+  #app{
+    width:100%;
+    max-width:var(--max-w);
+    min-height:100vh;
+    position:relative;
+    background:var(--cream);
+    overflow-x:hidden;
+  }
+
+  .view{
+    display:none;
+    flex-direction:column;
+    min-height:100vh;
+    padding:20px 20px 48px;
+    animation:fadeIn .35s ease;
+  }
+  .view.active{display:flex;}
+
+  @keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .view#view-landing{
+    justify-content:center;
+  }
+  .landing-inner{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+  }
+  .landing-inner .btn-primary{
+    margin-top:4px;
+  }
+
+  /* ---------- Header pill ---------- */
+  .topbar{
+    background:#fff;
+    border-radius:999px;
+    padding:16px 22px;
+    text-align:center;
+    font-size:14px;
+    font-weight:400;
+    color:var(--dark);
+    box-shadow:0 2px 10px rgba(0,0,0,0.04);
+    margin-bottom:28px;
+    flex-shrink:0;
+  }
+  .topbar b{font-weight:800;}
+
+  /* ---------- Logo ---------- */
+  .logo-wrap{
+    display:flex;
+    justify-content:center;
+    margin-bottom:20px;
+  }
+  .logo-wrap img{
+    width:230px;
+    max-width:70%;
+    height:auto;
+  }
+
+  /* ---------- Marquee icons ---------- */
+  .marquee{
+    width:100%;
+    overflow:hidden;
+    margin:6px 0 28px;
+    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+  .marquee-track{
+    display:flex;
+    width:max-content;
+    animation:scrollLeft 14s linear infinite;
+  }
+  .marquee-track img{
+    width:78px;
+    height:78px;
+    object-fit:contain;
+    margin:0 12px;
+    flex-shrink:0;
+  }
+  @keyframes scrollLeft{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* ---------- Landing copy ---------- */
+  .landing-quote{
+    text-align:center;
+    font-size:17px;
+    line-height:1.5;
+    font-weight:400;
+    color:var(--dark);
+    margin:8px 0 32px;
+  }
+  .landing-quote b{font-weight:800; font-style:italic;}
+
+  .spacer{flex:1;}
+
+  .btn-primary{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    align-self:center;
+    width:auto;
+    background:var(--blue);
+    color:var(--yellow);
+    border:none;
+    border-radius:999px;
+    font-family:'Inter',sans-serif;
+    font-weight:800;
+    font-size:19px;
+    letter-spacing:0.5px;
+    padding:15px 56px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn-primary:active{transform:scale(0.97); background:var(--blue-dark);}
+
+  /* ---------- Menu grid ---------- */
+  .menu-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:8px;
+  }
+  .menu-card{
+    border-radius:var(--radius-md);
+    padding:18px 16px 18px;
+    position:relative;
+    cursor:pointer;
+    border:none;
+    text-align:left;
+    font-family:'Inter',sans-serif;
+    display:flex;
+    flex-direction:column;
+    min-height:180px;
+    transition:transform .15s ease;
+  }
+  .menu-card:active{transform:scale(0.96);}
+  .menu-card.blue{background:var(--blue); color:var(--cream);}
+  .menu-card.yellow{background:var(--yellow); color:var(--dark);}
+
+  .menu-card .badge{
+    position:absolute;
+    top:12px;
+    right:12px;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+  }
+  .menu-card.blue .badge{background:var(--yellow); color:var(--blue);}
+  .menu-card.yellow .badge{background:var(--blue); color:var(--yellow);}
+
+  .menu-card img{
+    width:68px;
+    height:68px;
+    object-fit:contain;
+    margin:14px 0 auto;
+    align-self:center;
+  }
+  .menu-card h3{
+    font-size:17px;
+    font-weight:800;
+    margin:10px 0 2px;
+  }
+  .menu-card p{
+    font-size:12.5px;
+    font-weight:400;
+    margin:0;
+    opacity:0.85;
+  }
+
+  /* ---------- Mini logo (sub-pages) ---------- */
+  .mini-logo{
+    display:flex;
+    justify-content:center;
+    margin-bottom:18px;
+  }
+  .mini-logo img{
+    width:110px;
+    height:auto;
+  }
+
+  /* ---------- Bottom nav (back + home icon buttons) ---------- */
+  .nav-footer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    margin-top:32px;
+    flex-shrink:0;
+  }
+  .icon-btn{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:var(--blue);
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,0.12);
+    transition:transform .15s ease, background .15s ease;
+  }
+  .icon-btn:active{transform:scale(0.92); background:var(--blue-dark);}
+  .icon-btn svg{width:24px; height:24px;}
+
+  /* ---------- Sub page ---------- */
+  .back-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .back-btn{
+    background:#fff;
+    border:none;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    flex-shrink:0;
+  }
+  .back-btn svg{width:18px; height:18px;}
+  .page-title{
+    font-size:22px;
+    font-weight:800;
+    color:var(--blue);
+  }
+
+  .page-icon{
+    display:flex;
+    justify-content:center;
+    margin-bottom:18px;
+  }
+  .page-icon img{width:84px; height:84px; object-fit:contain;}
+
+  /* ---------- Concept page layout ---------- */
+  .concept-body{
+    overflow:hidden; /* contain the float */
+  }
+  .concept-logo{
+    float:left;
+    width:150px;
+    margin:0 18px 12px 0;
+  }
+  .concept-logo img{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .concept-body p{
+    font-size:14.5px;
+    line-height:1.65;
+    font-weight:400;
+    margin:0 0 14px;
+    color:var(--dark);
+  }
+  .concept-body i{font-style:italic; font-weight:700;}
+
+  .body-text{
+    font-size:15px;
+    line-height:1.7;
+    font-weight:400;
+    color:var(--dark);
+  }
+  .body-text p{margin:0 0 16px;}
+  .body-text b i, .body-text i{font-style:italic; font-weight:700;}
+
+  .reg-list, .join-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .reg-list li, .join-list li{
+    display:flex;
+    gap:14px;
+    background:#fff;
+    border-radius:var(--radius-sm);
+    padding:16px;
+    font-size:14.5px;
+    line-height:1.55;
+    font-weight:400;
+    box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  }
+  .reg-num, .join-num{
+    flex-shrink:0;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:var(--blue);
+    color:var(--yellow);
+    font-weight:800;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .reg-intro, .join-intro{
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:18px;
+    color:var(--dark);
+  }
+
+  /* ---------- Caretaker ---------- */
+  .ct-list{
+    display:flex;
+    flex-direction:column;
+    gap:32px;
+  }
+  .ct-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+  .ct-card img{
+    width:72%;
+    max-width:260px;
+    height:auto;
+    object-fit:contain;
+  }
+  .ct-name{
+    color:var(--blue);
+    font-size:22px;
+    font-weight:800;
+    margin-top:14px;
+  }
+  .ct-role{
+    color:var(--dark);
+    opacity:0.6;
+    font-size:13px;
+    font-weight:600;
+    margin-top:2px;
+  }
+
+  .footer-note{
+    text-align:center;
+    font-size:12px;
+    font-weight:400;
+    color:var(--dark);
+    opacity:0.55;
+    margin-top:32px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== VIEW 1: LANDING ===================== -->
+  <section class="view active" id="view-landing">
+    <div class="landing-inner">
+      <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
+
+      <div class="logo-wrap">
+        <img src="assets/logo.png" alt="Adiosection logo">
+      </div>
+
+      <div class="marquee">
+        <div class="marquee-track">
+          <img src="assets/icon1.png" alt="">
+          <img src="assets/icon2.png" alt="">
+          <img src="assets/icon3.png" alt="">
+          <img src="assets/icon4.png" alt="">
+          <img src="assets/icon1.png" alt="">
+          <img src="assets/icon2.png" alt="">
+          <img src="assets/icon3.png" alt="">
+          <img src="assets/icon4.png" alt="">
+        </div>
+      </div>
+
+      <p class="landing-quote">And perhaps, the only thing left to do is say,<br><b>Adios</b>.</p>
+
+      <button class="btn-primary" onclick="goTo('view-menu')">START</button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW 2: MENU ===================== -->
+  <section class="view" id="view-menu">
+    <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
+
+    <div class="logo-wrap">
+      <img src="assets/logo.png" alt="Adiosection logo">
+    </div>
+
+    <div class="menu-grid">
+      <button class="menu-card blue" onclick="goTo('view-concept')">
+        <span class="badge">★</span>
+        <img src="assets/icon1.png" alt="">
+        <h3>Concept?</h3>
+        <p>Get to know us more!</p>
+      </button>
+
+      <button class="menu-card yellow" onclick="goTo('view-caretaker')">
+        <span class="badge">◐</span>
+        <img src="assets/icon2.png" alt="">
+        <h3>Hello, Caretaker!</h3>
+        <p>The people behind all of these.</p>
+      </button>
+
+      <button class="menu-card yellow" onclick="goTo('view-regulations')">
+        <span class="badge">♥</span>
+        <img src="assets/icon4.png" alt="">
+        <h3>Regulations!</h3>
+        <p>I'd like to let you know it first.</p>
+      </button>
+
+      <button class="menu-card blue" onclick="goTo('view-join')">
+        <span class="badge">✿</span>
+        <img src="assets/icon3.png" alt="">
+        <h3>How to Join?</h3>
+        <p>Can you perhaps take a look?</p>
+      </button>
+    </div>
+
+    <p class="footer-note">tap a card to open</p>
+
+    <div class="spacer"></div>
+
+    <div class="nav-footer">
+      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+      </button>
+      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW 3: CONCEPT ===================== -->
+  <section class="view" id="view-concept">
+    <div class="back-row">
+      <button class="back-btn" onclick="goTo('view-menu')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="page-title">Concept?</span>
+    </div>
+
+    <div class="concept-body">
+      <div class="concept-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
+      <p>Have you ever felt so miserable that you couldn't even bring yourself to face the sunlight?</p>
+      <p>As if all you could do was sit with your sorrow, letting it consume you day after day. But maybe that's simply what it means to be alive. Regrets are inevitable, and so are the days when everything feels unbearably heavy. It's okay to feel lost. It's okay if you're not ready to move on just yet.</p>
+      <p>We're only human, <i>after all</i>.</p>
+      <p>You know what? The good thing about time is&hellip; it never stands still. 젊음은 가 아픔도 지나가. No matter how endless today may feel, tomorrow always finds its way to you.</p>
+      <p>So keep going. Some days may feel heavier than others, but every step counts. One day, you'll look back and realize the weight you've been carrying is no longer yours to bear.</p>
+      <p>And perhaps, the only thing left to do is say, "<i>Adios</i>."</p>
+    </div>
+
+    <div class="nav-footer">
+      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+      </button>
+      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW 4: CARETAKER ===================== -->
+  <section class="view" id="view-caretaker">
+    <div class="mini-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
+
+    <div class="back-row">
+      <button class="back-btn" onclick="goTo('view-menu')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="page-title">Hello, Caretaker!</span>
+    </div>
+
+    <p class="reg-intro" style="text-align:center;">The people behind all of these.</p>
+
+    <div class="ct-list">
+      <div class="ct-card">
+        <img src="assets/ct1.png" alt="Malik">
+        <div>
+          <div class="ct-name">Malik</div>
+          <div class="ct-role">Caretaker</div>
+        </div>
+      </div>
+      <div class="ct-card">
+        <img src="assets/ct2.png" alt="Luka">
+        <div>
+          <div class="ct-name">Luka</div>
+          <div class="ct-role">Caretaker</div>
+        </div>
+      </div>
+      <div class="ct-card">
+        <img src="assets/ct3.png" alt="Heri">
+        <div>
+          <div class="ct-name">Heri</div>
+          <div class="ct-role">Caretaker</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-footer">
+      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+      </button>
+      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW 5: REGULATIONS ===================== -->
+  <section class="view" id="view-regulations">
+    <div class="mini-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
+
+    <div class="back-row">
+      <button class="back-btn" onclick="goTo('view-menu')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="page-title">Regulations!</span>
+    </div>
+
+    <p class="reg-intro">Thinking of joining adiosection? Make sure you've read and understood all the regulations below first!</p>
+
+    <ul class="reg-list">
+      <li><span class="reg-num">1</span><span>One account per head. Twins are only allowed if the face claim has a real life twin.</span></li>
+      <li><span class="reg-num">2</span><span>We accept ALL STARS face claims born no later than 2006. However, face claims linked to Zionism or current controversies are strictly prohibited.</span></li>
+      <li><span class="reg-num">3</span><span>Adiosection will only last for 6 days, so make the most of your slot and stay active. A minimum of 45 tweets is required on Day 1, and 25 tweets on each following day.</span></li>
+      <li><span class="reg-num">4</span><span>Members who are inactive for 24 hours without prior notice may be unverified. If you can't participate in any activities, kindly let us know through the base or by contacting one of the admins in advance.</span></li>
+      <li><span class="reg-num">5</span><span>We strictly prohibit any discussion of inside jokes, drama, reunions, or CIC. Doxxing and the sharing of personal information (e.g., cyber accounts, Discord, Roblox, etc.) are also prohibited for the duration of the agency.</span></li>
+      <li><span class="reg-num">6</span><span>Interaction with outsiders is allowed, provided it doesn't become a two-way interaction. This is to help maintain a comfortable environment for everyone while the agency is running.</span></li>
+      <li><span class="reg-num">7</span><span>Profanity is acceptable as long as it's not used maliciously. However, posting or sharing any NSFW, graphic, or explicit content is not allowed under any circumstances.</span></li>
+    </ul>
+
+    <div class="nav-footer">
+      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+      </button>
+      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== VIEW 6: HOW TO JOIN ===================== -->
+  <section class="view" id="view-join">
+    <div class="mini-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
+
+    <div class="back-row">
+      <button class="back-btn" onclick="goTo('view-menu')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="page-title">How to Join?</span>
+    </div>
+
+    <p class="reg-intro">Can you perhaps take a look? Here's how it works:</p>
+
+    <ul class="join-list">
+      <li><span class="join-num">1</span><span>Make sure adiosection is the only account you're following.</span></li>
+      <li><span class="join-num">2</span><span>If you're applying with a recycled account, please post at least five blank tweets to clear your timeline.</span></li>
+      <li><span class="join-num">3</span><span>Keep an eye on our timeline and submit the form once it's up.</span></li>
+      <li><span class="join-num">4</span><span>You're all set! Verification results will be announced afterward, so please wait patiently for further updates.</span></li>
+    </ul>
+
+    <div class="nav-footer">
+      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+      </button>
+      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  function goTo(id){
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById('app').scrollTo({top:0, behavior:'instant'});
+    window.scrollTo({top:0, behavior:'instant'});
+  }
+</script>
+</body>
+</html>
