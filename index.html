@@ -43,9 +43,7 @@
     max-width:var(--max-w);
     min-height:100vh;
     position:relative;
-    background:
-      radial-gradient(circle at 8px 8px, rgba(0,99,195,.08) 1.5px, transparent 1.6px) 0 0/22px 22px,
-      var(--cream);
+    background:var(--cream);
     overflow-x:hidden;
   }
 
@@ -124,6 +122,7 @@
     padding:22px 22px 34px;
     position:relative;
     overflow:hidden;
+    text-align:center;
     box-shadow:6px 8px 0 var(--dark);
   }
   .hero-card .topbar{background:rgba(255,255,255,.95); margin-bottom:18px; border:2px solid var(--dark);}
@@ -151,7 +150,17 @@
     width:210px;
     max-width:78%;
     height:auto;
-    filter:brightness(0) invert(1);
+    display:block;
+  }
+  .logo-wrap--top{
+    margin-bottom:18px;
+    position:relative;
+    z-index:1;
+  }
+  .logo-wrap--top img{
+    width:230px;
+    max-width:82%;
+    margin:0 auto;
   }
   .landing-quote{
     text-align:center;
@@ -413,19 +422,13 @@
   }
   .concept-logo{
     float:left;
-    width:140px;
+    width:130px;
     margin:0 18px 12px 0;
-    border-radius:var(--radius-sm);
-    border:3px solid var(--dark);
-    background:var(--blue);
-    padding:14px;
-    box-shadow:4px 5px 0 var(--dark);
   }
   .concept-logo img{
     width:100%;
     height:auto;
     display:block;
-    filter:brightness(0) invert(1);
   }
   .concept-body p{
     font-size:14.5px;
@@ -539,9 +542,7 @@
     max-width:220px;
     height:auto;
     object-fit:contain;
-    border-radius:var(--radius-md);
-    border:2.5px solid var(--dark);
-    background:var(--white);
+    filter:drop-shadow(0 10px 14px rgba(37,37,37,.25));
   }
   .ct-name{
     display:inline-block;
@@ -603,14 +604,14 @@
     <div class="bg-blob b2"></div>
 
     <div class="landing-inner">
+      <div class="logo-wrap logo-wrap--top">
+        <img src="assets/logo.png" alt="Adiosection logo">
+      </div>
+
       <div class="hero-card">
         <div class="hero-ring"></div>
         <div class="hero-ring b2"></div>
         <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
-
-        <div class="logo-wrap">
-          <img src="assets/logo.png" alt="Adiosection logo">
-        </div>
 
         <p class="landing-quote">And perhaps, the only thing left to do is say,<br><b>Adios</b>.</p>
 
