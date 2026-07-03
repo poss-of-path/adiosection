@@ -13,7 +13,7 @@
     --blue-dark:#004a94;
     --blue-deep:#002f5c;
     --blue-tint:#dce9fb;
-    --yellow:#f2c94c;
+    --yellow:#f3d141;
     --yellow-dark:#d9a520;
     --yellow-tint:#fdf1d3;
     --cream:#fcf9ee;
@@ -53,7 +53,7 @@
     align-items:center;
     gap:6px;
     background:var(--yellow);
-    color:var(--blue-deep);
+    color:var(--blue);
     font-family:var(--font-body);
     font-size:11px;
     font-weight:800;
@@ -65,7 +65,7 @@
     box-shadow:2px 3px 0 var(--dark);
     animation:eyebrowWiggle 3.6s ease-in-out infinite;
   }
-  .eyebrow.on-blue{background:var(--cream); color:var(--blue-deep);}
+  .eyebrow.on-blue{background:var(--cream); color:var(--blue);}
 
   .view{
     display:none;
@@ -221,7 +221,7 @@
     align-self:center;
     width:auto;
     background:var(--yellow);
-    color:var(--blue-deep);
+    color:var(--blue);
     border:1.5px solid var(--dark);
     border-radius:999px;
     font-family:var(--font-body);
@@ -296,7 +296,7 @@
     font-family:var(--font-display);
     font-style:italic;
     font-weight:700;
-    color:var(--blue-deep);
+    color:var(--blue);
     text-decoration:underline;
     text-decoration-style:wavy;
     text-decoration-color:var(--yellow-dark);
@@ -334,7 +334,7 @@
   .menu-card:nth-child(4){animation-delay:.35s;}
   .menu-card:active{transform:translate(3px,4px); box-shadow:1px 1px 0 var(--dark);}
   .menu-card.blue{background:var(--blue); color:var(--cream);}
-  .menu-card.yellow{background:var(--yellow); color:var(--dark);}
+  .menu-card.yellow{background:var(--yellow); color:var(--blue);}
 
   .menu-card .badge{
     position:absolute;
@@ -451,7 +451,7 @@
     z-index:1;
   }
   .page-banner.blue .page-title{color:var(--cream);}
-  .page-banner.yellow .page-title{color:var(--blue-deep);}
+  .page-banner.yellow .page-title{color:var(--blue);}
 
   .banner-icon{
     position:absolute;
@@ -466,11 +466,12 @@
 
   /* ---------- Concept page layout ---------- */
   .concept-body{
-  overflow:hidden;
-  background:var(--white);
-  border-radius:var(--radius-lg);
-  padding:22px;
-}
+    overflow:hidden;
+    background:var(--white);
+    border-radius:var(--radius-lg);
+    padding:22px;
+    box-shadow:0 2px 0 5px rgba(37,37,37,.5);
+  }
   .concept-logo{
     float:left;
     width:130px;
@@ -611,7 +612,7 @@
     display:inline-block;
     font-family:var(--font-display);
     font-style:italic;
-    color:var(--blue-deep);
+    color:var(--blue);
     background:var(--yellow);
     border:1.5px solid var(--dark);
     padding:4px 18px;
@@ -836,7 +837,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <span class="page-title">Regulations!</span>
-      <img class="banner-icon" src="assets/icon3.png" alt="">
+      <img class="banner-icon" src="assets/icon4.png" alt="">
     </div>
 
     <p class="reg-intro">Thinking of joining adiosection? Make sure you've read and understood all the regulations below first!</p>
@@ -868,7 +869,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <span class="page-title">How to Join?</span>
-      <img class="banner-icon" src="assets/icon4.png" alt="">
+      <img class="banner-icon" src="assets/icon3.png" alt="">
     </div>
 
     <p class="join-intro">Can you perhaps take a look? Here's how it works:</p>
