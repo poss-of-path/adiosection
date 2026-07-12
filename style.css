@@ -176,8 +176,8 @@ h1.title{
 
 .star-wrap .done-label{
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 60%;
+  left: 40%;
   transform: translate(-50%, -50%);
   font-weight: 800;
   color: var(--blue);
