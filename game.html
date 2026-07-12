@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adiosection — Day 2: Word Search</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<div class="page">
+
+  <div class="logo-wrap">
+    <img src="assets/logo.png" alt="Adiosection logo">
+  </div>
+
+  <div class="game-header">
+    <div class="game-title">FIND THE WORDS</div>
+    <div class="game-subtitle">Drag across the letters to find all 5 words below.</div>
+  </div>
+
+  <div class="word-bank" id="wordBank"></div>
+
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="back-link-wrap">
+    <a class="back-link" href="index.html">← Back to Attendance</a>
+  </div>
+
+</div>
+
+<!-- Congrats popup -->
+<div class="modal-backdrop" id="winModal">
+  <div class="modal-box">
+    <img src="assets/star.png" alt="" onerror="this.style.display='none'">
+    <p>Congratulations! you success in jashsk, adios!</p>
+    <button onclick="window.location.href='index.html'">Back to Home</button>
+  </div>
+</div>
+
+<script>
+const WORDS = ["HELLO","GOODBYE","ADIOS","ALOHA","SAYONARA"];
+const SIZE = 10;
+const CELL = 34; // px, keep in sync with CSS sizing below
+const COLORS = ["#0063c3", "#f3d141", "#252525"]; // blue, yellow, ink — cycled per word
+
+let grid = [];
+let placements = {}; // word -> {row,col,dir,len}
+let foundWords = new Set();
+
+function buildGrid(){
+  grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+  const dirs = [[0,1],[1,0],[1,1],[1,-1]];
+
+  for(const word of WORDS){
+    let placed = false, attempts = 0;
+    while(!placed && attempts < 800){
+      attempts++;
+      const dir = dirs[Math.floor(Math.random()*dirs.length)];
+      const row = Math.floor(Math.random()*SIZE);
+      const col = Math.floor(Math.random()*SIZE);
+      const endRow = row + dir[0]*(word.length-1);
+      const endCol = col + dir[1]*(word.length-1);
+      if(endRow < 0 || endRow >= SIZE || endCol < 0 || endCol >= SIZE) continue;
+
+      let ok = true;
+      for(let i=0; i<word.length; i++){
+        const r = row + dir[0]*i, c = col + dir[1]*i;
+        if(grid[r][c] && grid[r][c] !== word[i]){ ok = false; break; }
+      }
+      if(!ok) continue;
+
+      for(let i=0; i<word.length; i++){
+        const r = row + dir[0]*i, c = col + dir[1]*i;
+        grid[r][c] = word[i];
+      }
+      placements[word] = {row, col, dir, len: word.length};
+      placed = true;
+    }
+  }
+
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for(let r=0; r<SIZE; r++)
+    for(let c=0; c<SIZE; c++)
+      if(!grid[r][c]) grid[r][c] = alphabet[Math.floor(Math.random()*26)];
+}
+
+function renderWordBank(){
+  const bank = document.getElementById('wordBank');
+  bank.innerHTML = '';
+  WORDS.forEach(w => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.id = 'chip-' + w;
+    chip.textContent = w;
+    bank.appendChild(chip);
+  });
+}
+
+function renderBoard(){
+  const board = document.getElementById('board');
+  board.style.gridTemplateColumns = `repeat(${SIZE}, ${CELL}px)`;
+  board.style.gridTemplateRows = `repeat(${SIZE}, ${CELL}px)`;
+  board.innerHTML = '';
+
+  for(let r=0; r<SIZE; r++){
+    for(let c=0; c<SIZE; c++){
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      cell.textContent = grid[r][c];
+      cell.addEventListener('mousedown', onStart);
+      cell.addEventListener('mouseenter', onEnter);
+      cell.addEventListener('touchstart', onTouchStart, {passive:false});
+      board.appendChild(cell);
+    }
+  }
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("class", "line-layer");
+  svg.setAttribute("viewBox", `0 0 ${SIZE*CELL} ${SIZE*CELL}`);
+  svg.id = "lineLayer";
+  board.appendChild(svg);
+
+  document.addEventListener('mouseup', onEnd);
+}
+
+let selecting = false;
+let startCell = null;
+let currentPreview = null;
+
+function cellCenter(r, c){
+  return { x: c*CELL + CELL/2, y: r*CELL + CELL/2 };
+}
+
+function onStart(e){
+  selecting = true;
+  startCell = { r: +e.currentTarget.dataset.r, c: +e.currentTarget.dataset.c };
+}
+
+function onEnter(e){
+  if(!selecting) return;
+  const r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
+  drawPreview(startCell, {r,c});
+}
+
+function onTouchStart(e){
+  e.preventDefault();
+  selecting = true;
+  const t = e.touches[0];
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  if(el && el.classList.contains('cell')){
+    startCell = { r: +el.dataset.r, c: +el.dataset.c };
+  }
+  document.addEventListener('touchmove', onTouchMove, {passive:false});
+  document.addEventListener('touchend', onTouchEnd);
+}
+
+function onTouchMove(e){
+  if(!selecting) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  if(el && el.classList.contains('cell')){
+    drawPreview(startCell, { r: +el.dataset.r, c: +el.dataset.c });
+  }
+}
+
+function onTouchEnd(){
+  document.removeEventListener('touchmove', onTouchMove);
+  document.removeEventListener('touchend', onTouchEnd);
+  finalizeSelection();
+}
+
+function onEnd(){
+  if(!selecting) return;
+  finalizeSelection();
+}
+
+function straightPath(a, b){
+  const dr = b.r - a.r, dc = b.c - a.c;
+  const steps = Math.max(Math.abs(dr), Math.abs(dc));
+  if(steps === 0) return [a];
+  const stepR = Math.sign(dr), stepC = Math.sign(dc);
+  // only allow perfectly straight/diagonal lines
+  if(dr !== 0 && dc !== 0 && Math.abs(dr) !== Math.abs(dc)) return null;
+  const path = [];
+  for(let i=0; i<=steps; i++){
+    path.push({ r: a.r + stepR*i, c: a.c + stepC*i });
+  }
+  return path;
+}
+
+function drawPreview(a, b){
+  const svg = document.getElementById('lineLayer');
+  const existing = svg.querySelector('.preview-line');
+  if(existing) existing.remove();
+
+  const path = straightPath(a, b);
+  if(!path) { currentPreview = null; return; }
+  currentPreview = path;
+
+  const p1 = cellCenter(a.r, a.c);
+  const p2 = cellCenter(b.r, b.c);
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("class", "preview-line trace-stroke");
+  line.setAttribute("x1", p1.x); line.setAttribute("y1", p1.y);
+  line.setAttribute("x2", p2.x); line.setAttribute("y2", p2.y);
+  line.setAttribute("stroke", "#252525");
+  line.setAttribute("stroke-width", CELL*0.55);
+  line.setAttribute("opacity", "0.18");
+  svg.appendChild(line);
+}
+
+function finalizeSelection(){
+  selecting = false;
+  const svg = document.getElementById('lineLayer');
+  const existing = svg.querySelector('.preview-line');
+  if(existing) existing.remove();
+
+  if(currentPreview && currentPreview.length > 1){
+    checkMatch(currentPreview);
+  }
+  currentPreview = null;
+  startCell = null;
+}
+
+function checkMatch(path){
+  const forward = path.map(p => grid[p.r][p.c]).join('');
+  const backward = forward.split('').reverse().join('');
+
+  for(const word of WORDS){
+    if(foundWords.has(word)) continue;
+    if(forward === word || backward === word){
+      markFound(word, path);
+      return;
+    }
+  }
+}
+
+function markFound(word, path){
+  foundWords.add(word);
+  document.getElementById('chip-' + word).classList.add('found');
+
+  const colorIndex = WORDS.indexOf(word) % COLORS.length;
+  const color = COLORS[colorIndex];
+
+  const svg = document.getElementById('lineLayer');
+  const p1 = cellCenter(path[0].r, path[0].c);
+  const p2 = cellCenter(path[path.length-1].r, path[path.length-1].c);
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("class", "trace-stroke");
+  line.setAttribute("x1", p1.x); line.setAttribute("y1", p1.y);
+  line.setAttribute("x2", p2.x); line.setAttribute("y2", p2.y);
+  line.setAttribute("stroke", color);
+  line.setAttribute("stroke-width", CELL*0.5);
+  svg.appendChild(line);
+
+  if(foundWords.size === WORDS.length){
+    setTimeout(() => {
+      document.getElementById('winModal').classList.add('open');
+    }, 400);
+  }
+}
+
+buildGrid();
+renderWordBank();
+renderBoard();
+</script>
+
+</body>
+</html>

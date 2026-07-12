@@ -1,0 +1,219 @@
+/* ===========================================================
+   Adiosection — Attendance
+   Palette: Blue #0063C3 · Yellow #F3D141 · Cream #FCF9EE · Ink #252525
+   Font: Inter (weight does all the talking)
+=========================================================== */
+
+:root{
+  --blue: #0063c3;
+  --blue-ink: #0052a3;
+  --yellow: #f3d141;
+  --cream: #fcf9ee;
+  --ink: #252525;
+
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 10px 24px rgba(37,37,37,0.10);
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  margin: 0;
+  padding: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page{
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 56px 28px 64px;
+  min-height: 100vh;
+}
+
+/* ---------- Header ---------- */
+
+.logo-wrap{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.logo-wrap img{
+  height: 108px;
+  width: auto;
+  object-fit: contain;
+}
+
+h1.title{
+  text-align: center;
+  font-weight: 900;
+  font-size: clamp(34px, 8vw, 46px);
+  letter-spacing: 0.5px;
+  margin: 6px 0 14px;
+  color: var(--ink);
+}
+
+.subtitle{
+  text-align: center;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  opacity: 0.72;
+  max-width: 420px;
+  margin: 0 auto 36px;
+}
+
+/* ---------- Card grid ---------- */
+
+.grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 480px){
+  .grid{ gap: 10px; }
+}
+
+.card{
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 10px;
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--shadow-card);
+  transition: transform .15s ease, box-shadow .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:hover{ transform: translateY(-3px); }
+.card:active{ transform: translateY(0px) scale(0.98); }
+
+.card.bg-blue{ background: var(--blue); }
+.card.bg-yellow{ background: var(--yellow); }
+
+.card .icon{
+  width: 56%;
+  max-width: 90px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  pointer-events: none;
+}
+
+.card .day-label{
+  font-weight: 900;
+  font-size: clamp(18px, 4.6vw, 24px);
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+.card.bg-yellow .day-label{ color: var(--blue); }
+.card.bg-blue .day-label{ color: var(--yellow); }
+
+/* completed / starred state */
+.card.completed{
+  background: var(--blue);
+}
+
+.card.completed .star{
+  width: 62%;
+  max-width: 100px;
+  pointer-events: none;
+}
+
+.card.completed .done-label{
+  position: absolute;
+  font-weight: 900;
+  color: var(--blue);
+  font-size: clamp(14px, 3.8vw, 17px);
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+}
+
+/* ---------- Footer pill ---------- */
+
+.footer-pill-wrap{
+  display: flex;
+  justify-content: center;
+  margin-top: 44px;
+}
+
+.footer-pill{
+  background: var(--blue);
+  color: var(--yellow);
+  font-size: 14px;
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+}
+
+.footer-pill b{
+  color: var(--cream);
+  font-weight: 800;
+}
+
+/* ---------- Modal (shared) ---------- */
+
+.modal-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(37,37,37,0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 50;
+}
+
+.modal-backdrop.open{ display: flex; }
+
+.modal-box{
+  background: var(--cream);
+  border-radius: var(--radius-lg);
+  padding: 32px 26px 26px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+.modal-box img{
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  margin: 0 auto 14px;
+}
+
+.modal-box p{
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0 0 22px;
+}
+
+.modal-box button{
+  border: none;
+  background: var(--blue);
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: 14px;
+  padding: 12px 26px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.modal-box button:hover{ background: var(--blue-ink); }
