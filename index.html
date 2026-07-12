@@ -2,907 +2,102 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Adiosection</title>
-<link rel="icon" type="image/png" href="assets/icon2.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adiosection — Attendance</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600;1,9..144,700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --blue:#0063c3;
-    --blue-dark:#004a94;
-    --blue-deep:#002f5c;
-    --blue-tint:#dce9fb;
-    --yellow:#f3d141;
-    --yellow-dark:#d9a520;
-    --yellow-tint:#fdf1d3;
-    --cream:#fcf9ee;
-    --dark:#252525;
-    --white:#ffffff;
-    --radius-lg:32px;
-    --radius-md:24px;
-    --radius-sm:16px;
-    --max-w:480px;
-    --font-display:'Fraunces', serif;
-    --font-body:'Inter', sans-serif;
-  }
-
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--cream);
-    font-family:var(--font-body);
-    color:var(--dark);
-    display:flex;
-    justify-content:center;
-    min-height:100vh;
-  }
-
-  #app{
-    width:100%;
-    max-width:var(--max-w);
-    min-height:100vh;
-    position:relative;
-    background:var(--cream);
-    overflow-x:hidden;
-  }
-
-  /* ---------- reusable eyebrow / tag pill ---------- */
-  .eyebrow{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:var(--yellow);
-    color:var(--blue);
-    font-family:var(--font-body);
-    font-size:11px;
-    font-weight:800;
-    letter-spacing:1.4px;
-    text-transform:uppercase;
-    padding:7px 14px;
-    border-radius:999px;
-    border:1.5px solid var(--dark);
-    box-shadow:2px 3px 0 var(--dark);
-    animation:eyebrowWiggle 3.6s ease-in-out infinite;
-  }
-  .eyebrow.on-blue{background:var(--cream); color:var(--blue);}
-
-  .view{
-    display:none;
-    flex-direction:column;
-    min-height:100vh;
-    padding:20px 20px 44px;
-    position:relative;
-    z-index:1;
-  }
-  .view.active{display:flex; animation:fadeIn .35s ease;}
-
-  @keyframes fadeIn{
-    from{opacity:0; transform:translateY(10px);}
-    to{opacity:1; transform:translateY(0);}
-  }
-
-  /* ---------- shared motion library (subtle) ---------- */
-  @keyframes floatY{
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-8px);}
-  }
-  @keyframes spinSlow{from{transform:rotate(0);}to{transform:rotate(360deg);}}
-  @keyframes spinSlowRev{from{transform:rotate(360deg);}to{transform:rotate(0);}}
-  @keyframes badgePulse{
-    0%,100%{transform:rotate(-10deg) scale(1);}
-    50%{transform:rotate(-10deg) scale(1.12);}
-  }
-  @keyframes stickerWiggle{
-    0%,100%{transform:rotate(14deg);}
-    50%{transform:rotate(5deg);}
-  }
-  @keyframes eyebrowWiggle{
-    0%,100%{transform:rotate(-2deg);}
-    50%{transform:rotate(2deg);}
-  }
-  @keyframes breathe{
-    0%,100%{box-shadow:4px 5px 0 var(--dark);}
-    50%{box-shadow:6px 8px 0 var(--dark);}
-  }
-  @keyframes fadeUp{
-    from{opacity:0; transform:translateY(14px);}
-    to{opacity:1; transform:translateY(0);}
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    *, *::before, *::after{
-      animation-duration:0.001ms !important;
-      animation-iteration-count:1 !important;
-      transition-duration:0.001ms !important;
-      scroll-behavior:auto !important;
-    }
-  }
-
-  /* ---------- decorative blobs ---------- */
-  .bg-blob{position:absolute; border-radius:50%; filter:blur(46px); opacity:.4; z-index:0; pointer-events:none;}
-  .bg-blob.b1{width:200px;height:200px;background:var(--yellow); top:-50px; right:-60px; animation:floatY 6.5s ease-in-out infinite;}
-  .bg-blob.b2{width:240px;height:240px;background:var(--blue); bottom:60px; left:-90px; opacity:.18; animation:floatY 8s ease-in-out infinite; animation-delay:-3s;}
-
-  /* ---------- Header pill ---------- */
-  .topbar{
-    background:rgba(255,255,255,.92);
-    border:1.5px solid var(--dark);
-    border-radius:999px;
-    padding:12px 20px;
-    text-align:center;
-    font-size:12.5px;
-    font-weight:400;
-    color:var(--dark);
-    box-shadow:2px 3px 0 var(--dark);
-    margin-bottom:22px;
-    flex-shrink:0;
-  }
-  .topbar b{font-weight:800; font-family:var(--font-display); font-style:italic;}
-
-  /* ================= LANDING ================= */
-  .view#view-landing{justify-content:center;}
-  .landing-inner{
-    display:flex;
-    flex-direction:column;
-    width:100%;
-    position:relative;
-    z-index:1;
-  }
-
-  .hero-card{
-    background:var(--blue);
-    border-radius:var(--radius-lg);
-    border:1.5px solid var(--dark);
-    padding:22px 22px 34px;
-    position:relative;
-    overflow:hidden;
-    text-align:center;
-    box-shadow:6px 8px 0 var(--dark);
-  }
-  .hero-card .topbar{background:rgba(255,255,255,.95); margin-bottom:18px; border:1.5px solid var(--dark);}
-  .hero-ring{
-    position:absolute;
-    width:150px; height:150px;
-    border-radius:50%;
-    border:2px dashed rgba(255,255,255,.4);
-    top:-40px; left:-40px;
-    animation:spinSlow 30s linear infinite;
-  }
-  .hero-ring.b2{
-    width:90px; height:90px;
-    top:auto; left:auto;
-    bottom:-30px; right:-20px;
-    border-color:rgba(242,201,76,.55);
-    animation:spinSlowRev 22s linear infinite;
-  }
-  .logo-wrap{
-    display:flex;
-    justify-content:center;
-    margin-bottom:14px;
-    position:relative;
-    z-index:1;
-  }
-  .logo-wrap img{
-    width:210px;
-    max-width:78%;
-    height:auto;
-    display:block;
-  }
-  .logo-wrap--top{
-    margin-bottom:18px;
-    position:relative;
-    z-index:1;
-  }
-  .logo-wrap--top img{
-    width:230px;
-    max-width:82%;
-    margin:0 auto;
-    animation:floatY 3.6s ease-in-out infinite;
-  }
-  .landing-quote{
-    text-align:center;
-    font-family:var(--font-display);
-    font-style:italic;
-    font-size:19px;
-    line-height:1.45;
-    font-weight:500;
-    color:var(--cream);
-    margin:2px 0 26px;
-    position:relative;
-    z-index:1;
-  }
-  .landing-quote b{font-weight:700; color:var(--yellow);}
-
-  .btn-primary{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    align-self:center;
-    width:auto;
-    background:var(--yellow);
-    color:var(--blue);
-    border:1.5px solid var(--dark);
-    border-radius:999px;
-    font-family:var(--font-body);
-    font-weight:800;
-    font-size:16px;
-    letter-spacing:0.6px;
-    text-transform:uppercase;
-    padding:8px 40px;
-    text-align:center;
-    cursor:pointer;
-    position:relative;
-    z-index:1;
-    box-shadow:4px 5px 0 var(--dark);
-    animation:breathe 3.2s ease-in-out infinite;
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .btn-primary:hover{transform:translateY(-2px);}
-  .btn-primary:active{transform:translate(3px,4px); box-shadow:1px 1px 0 var(--dark); animation-play-state:paused;}
-
-  .gang-label{
-    display:block;
-    text-align:center;
-    margin:28px 0 14px;
-  }
-  .gang-label .eyebrow{margin:0 auto;}
-
-  /* ---------- Marquee icons ---------- */
-  .marquee{
-    width:100%;
-    overflow:hidden;
-    padding:8px 0 4px;
-    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-    mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-  }
-  .marquee-track{
-    display:flex;
-    width:max-content;
-    animation:scrollLeft 14s linear infinite;
-    align-items:flex-end;
-  }
-  .marquee-track img{
-    width:76px;
-    height:76px;
-    object-fit:contain;
-    margin:0 12px;
-    flex-shrink:0;
-    border-radius:20px;
-    border:1.5px solid var(--dark);
-    padding:8px;
-    box-shadow:3px 4px 0 rgba(37,37,37,.9);
-  }
-  .marquee-track img:nth-child(4n+1){transform:rotate(-6deg); background:var(--yellow-tint);}
-  .marquee-track img:nth-child(4n+2){transform:rotate(4deg); background:var(--blue-tint);}
-  .marquee-track img:nth-child(4n+3){transform:rotate(-3deg); background:var(--cream);}
-  .marquee-track img:nth-child(4n+4){transform:rotate(5deg); background:var(--yellow-tint);}
-  @keyframes scrollLeft{
-    from{transform:translateX(0);}
-    to{transform:translateX(-50%);}
-  }
-
-  /* ================= MENU ================= */
-  .menu-header{margin-bottom:20px;}
-  .menu-header .logo-wrap img{filter:none; width:190px;}
-  .menu-sub{
-    text-align:center;
-    font-size:15px;
-    font-weight:700;
-    color:var(--dark);
-    margin-top:6px;
-  }
-  .menu-sub span{
-    font-family:var(--font-display);
-    font-style:italic;
-    font-weight:700;
-    color:var(--blue);
-    text-decoration:underline;
-    text-decoration-style:wavy;
-    text-decoration-color:var(--yellow-dark);
-    text-underline-offset:4px;
-  }
-
-  .menu-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-    margin-top:20px;
-    position:relative;
-    z-index:1;
-  }
-  .menu-card{
-    border-radius:var(--radius-md);
-    padding:16px 14px 16px;
-    position:relative;
-    cursor:pointer;
-    border:1.5px solid var(--dark);
-    text-align:left;
-    font-family:var(--font-body);
-    display:flex;
-    flex-direction:column;
-    min-height:198px;
-    transition:transform .15s ease, box-shadow .15s ease;
-    box-shadow:5px 6px 0 var(--dark);
-    overflow:visible;
-    opacity:0;
-    animation:fadeUp .5s ease forwards;
-  }
-  .menu-card:nth-child(1){animation-delay:.05s;}
-  .menu-card:nth-child(2){animation-delay:.15s;}
-  .menu-card:nth-child(3){animation-delay:.25s;}
-  .menu-card:nth-child(4){animation-delay:.35s;}
-  .menu-card:active{transform:translate(3px,4px); box-shadow:1px 1px 0 var(--dark);}
-  .menu-card.blue{background:var(--blue); color:var(--cream);}
-  .menu-card.yellow{background:var(--yellow); color:var(--blue);}
-
-  .menu-card .badge{
-    position:absolute;
-    top:-12px;
-    right:-10px;
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:14px;
-    border:1.5px solid var(--dark);
-    transform:rotate(-10deg);
-    box-shadow:2px 3px 0 var(--dark);
-    animation:badgePulse 2.6s ease-in-out infinite;
-  }
-  .menu-card.blue .badge{background:var(--yellow); color:var(--blue-deep);}
-  .menu-card.yellow .badge{background:var(--cream); color:var(--blue-deep);}
-
-  .menu-card .sticker{
-    position:absolute;
-    bottom:-10px;
-    left:-8px;
-    width:34px;
-    height:34px;
-    object-fit:contain;
-    transform:rotate(14deg);
-    filter:drop-shadow(2px 3px 0 rgba(37,37,37,.9));
-    animation:stickerWiggle 3s ease-in-out infinite;
-  }
-
-  .icon-stage{
-    width:78px;
-    height:78px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin:4px auto 10px;
-    border:1.5px solid var(--dark);
-  }
-  .menu-card.blue .icon-stage{background:var(--cream);}
-  .menu-card.yellow .icon-stage{background:var(--white);}
-  .menu-card img.center-icon{
-    width:44px;
-    height:44px;
-    object-fit:contain;
-  }
-  .menu-card h3{
-    font-family:var(--font-display);
-    font-style:italic;
-    font-size:18px;
-    font-weight:700;
-    margin:4px 0 4px;
-  }
-  .menu-card p{
-    font-size:12.5px;
-    font-weight:400;
-    margin:0;
-    opacity:0.85;
-  }
-
-  .footer-note{
-    text-align:center;
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:.3px;
-    color:var(--blue-deep);
-    opacity:0.65;
-    margin-top:26px;
-  }
-  .spacer{flex:1;}
-
-  /* ================= SUB PAGE BANNER ================= */
-  .page-banner{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    border-radius:var(--radius-md);
-    border:1.5px solid var(--dark);
-    padding:16px 20px;
-    margin-bottom:26px;
-    position:relative;
-    overflow:hidden;
-    box-shadow:5px 6px 0 var(--dark);
-  }
-  .page-banner.blue{background:var(--blue);}
-  .page-banner.yellow{background:var(--yellow);}
-
-  .back-btn{
-    background:var(--cream);
-    border:1.5px solid var(--dark);
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    box-shadow:2px 3px 0 var(--dark);
-    flex-shrink:0;
-    position:relative;
-    z-index:1;
-  }
-  .back-btn svg{width:18px; height:18px;}
-
-  .page-title{
-    font-family:var(--font-display);
-    font-style:italic;
-    font-size:23px;
-    font-weight:700;
-    position:relative;
-    z-index:1;
-  }
-  .page-banner.blue .page-title{color:var(--cream);}
-  .page-banner.yellow .page-title{color:var(--blue);}
-
-  .banner-icon{
-    position:absolute;
-    right:14px;
-    top:50%;
-    transform:translateY(-50%) rotate(-12deg);
-    width:52px;
-    height:52px;
-    object-fit:contain;
-    opacity:.9;
-  }
-
-  /* ---------- Concept page layout ---------- */
-  .concept-body{
-    overflow:hidden;
-    background:var(--white);
-    border-radius:var(--radius-lg);
-    padding:22px;
-  }
-  
-  .concept-logo{
-    float:left;
-    width:130px;
-    margin:0 18px 12px 0;
-  }
-  .concept-logo img{
-    width:100%;
-    height:auto;
-    display:block;
-  }
-  .concept-body p{
-    font-size:14.5px;
-    line-height:1.7;
-    font-weight:400;
-    margin:0 0 14px;
-    color:var(--dark);
-    text-align:justify;
-  }
-  .concept-body i{font-family:var(--font-display); font-style:italic; font-weight:700;}
-
-  .pull-quote{
-    clear:both;
-    position:relative;
-    background:var(--blue);
-    border:1.5px solid var(--dark);
-    border-radius:var(--radius-md);
-    padding:26px 24px 22px;
-    margin-top:12px;
-    font-family:var(--font-display);
-    font-size:19px;
-    line-height:1.4;
-    font-weight:600;
-    font-style:italic;
-    text-align:center;
-    color:var(--cream);
-    box-shadow:5px 6px 0 var(--dark);
-  }
-  .pull-quote::before{
-    content:"“";
-    position:absolute;
-    top:-6px; left:16px;
-    font-family:var(--font-display);
-    font-size:64px;
-    font-weight:700;
-    color:var(--yellow);
-    line-height:1;
-  }
-
-  /* ---------- lists (reg / join) ---------- */
-  .reg-intro, .join-intro{
-    font-family:var(--font-display);
-    font-style:italic;
-    font-size:18px;
-    font-weight:600;
-    margin-bottom:20px;
-    color:var(--blue-deep);
-  }
-  .reg-list, .join-list{
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-  }
-  .reg-list li, .join-list li{
-    display:flex;
-    gap:14px;
-    align-items:flex-start;
-    border-radius:var(--radius-sm);
-    border:1.5px solid var(--dark);
-    padding:15px 16px;
-    font-size:14px;
-    line-height:1.55;
-    font-weight:400;
-    box-shadow:3px 4px 0 var(--dark);
-    opacity:0;
-    animation:fadeUp .45s ease forwards;
-  }
-  .reg-list li:nth-child(1), .join-list li:nth-child(1){animation-delay:.04s;}
-  .reg-list li:nth-child(2), .join-list li:nth-child(2){animation-delay:.11s;}
-  .reg-list li:nth-child(3), .join-list li:nth-child(3){animation-delay:.18s;}
-  .reg-list li:nth-child(4), .join-list li:nth-child(4){animation-delay:.25s;}
-  .reg-list li:nth-child(5){animation-delay:.32s;}
-  .reg-list li:nth-child(6){animation-delay:.39s;}
-  .reg-list li:nth-child(7){animation-delay:.46s;}
-  .reg-list li:nth-child(4n+1), .join-list li:nth-child(4n+1){background:var(--blue); color:var(--cream);}
-  .reg-list li:nth-child(4n+2), .join-list li:nth-child(4n+2){background:var(--yellow-tint); color:var(--dark);}
-  .reg-list li:nth-child(4n+3), .join-list li:nth-child(4n+3){background:var(--yellow); color:var(--dark);}
-  .reg-list li:nth-child(4n+4), .join-list li:nth-child(4n+4){background:var(--blue-tint); color:var(--dark);}
-
-  .reg-num, .join-num{
-    flex-shrink:0;
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:var(--cream);
-    border:1.5px solid var(--dark);
-    color:var(--blue-deep);
-    font-weight:800;
-    font-size:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transform:rotate(-8deg);
-    box-shadow:2px 3px 0 var(--dark);
-  }
-
-  /* ---------- Caretaker ---------- */
-  .ct-list{
-    display:flex;
-    flex-direction:column;
-    gap:34px;
-  }
-  .ct-card{
-    padding:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-    position:relative;
-    opacity:0;
-    animation:fadeUp .5s ease forwards;
-  }
-  .ct-card:nth-child(1){animation-delay:.05s;}
-  .ct-card:nth-child(2){animation-delay:.16s;}
-  .ct-card:nth-child(3){animation-delay:.27s;}
-  .ct-card img{
-    width:64%;
-    max-width:220px;
-    height:auto;
-    object-fit:contain;
-    filter:drop-shadow(0 10px 14px rgba(37,37,37,.25));
-    animation:floatY 4.2s ease-in-out infinite;
-  }
-  .ct-card:nth-child(2) img{animation-delay:-1.4s;}
-  .ct-card:nth-child(3) img{animation-delay:-2.8s;}
-  .ct-name{
-    display:inline-block;
-    font-family:var(--font-display);
-    font-style:italic;
-    color:var(--blue);
-    background:var(--yellow);
-    border:1.5px solid var(--dark);
-    padding:4px 18px;
-    border-radius:999px;
-    font-size:20px;
-    font-weight:700;
-    margin-top:16px;
-    transform:rotate(-1.5deg);
-    box-shadow:2px 3px 0 var(--dark);
-  }
-  .ct-role{
-    color:var(--dark);
-    opacity:0.6;
-    font-size:12.5px;
-    font-weight:700;
-    letter-spacing:.6px;
-    text-transform:uppercase;
-    margin-top:8px;
-  }
-
-  /* ---------- Bottom nav (back + home icon buttons) ---------- */
-  .nav-footer{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:14px;
-    margin-top:32px;
-    flex-shrink:0;
-  }
-  .icon-btn{
-    width:54px;
-    height:54px;
-    border-radius:50%;
-    background:var(--blue);
-    border:1.5px solid var(--dark);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    box-shadow:3px 4px 0 var(--dark);
-    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-  }
-  .icon-btn:active{transform:translate(2px,3px); box-shadow:1px 1px 0 var(--dark); background:var(--blue-dark);}
-  .icon-btn svg{width:22px; height:22px;}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="app">
 
-  <!-- ===================== VIEW 1: LANDING ===================== -->
-  <section class="view active" id="view-landing">
-    <div class="bg-blob b1"></div>
-    <div class="bg-blob b2"></div>
+<div class="page">
 
-    <div class="landing-inner">
-      <div class="logo-wrap logo-wrap--top">
-        <img src="assets/logo.png" alt="Adiosection logo">
-      </div>
+  <div class="logo-wrap">
+    <img src="assets/logo.png" alt="Adiosection logo">
+  </div>
 
-      <div class="hero-card">
-        <div class="hero-ring"></div>
-        <div class="hero-ring b2"></div>
-        <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
+  <h1 class="title">ATTENDANCE</h1>
+  <p class="subtitle">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+    incididunt ut labore et dolore magna aliqua.
+  </p>
 
-        <p class="landing-quote">And perhaps, the only thing left to do is say, <b>Adios</b>.</p>
+  <!--
+    TEMPLATE NOTE:
+    To mark a future day as completed, just add class="completed" to that
+    .card and swap its inner markup for the "completed" block below
+    (star icon + WELL DONE label) — see Day 1 as the reference example.
+  -->
 
-        <button class="btn-primary" onclick="goTo('view-menu')">START</button>
-      </div>
+  <div class="grid" id="cardGrid">
 
-      <p class="gang-label"><span class="eyebrow">say hi to the gang</span></p>
-      <div class="marquee">
-        <div class="marquee-track">
-          <img src="assets/icon1.png" alt="">
-          <img src="assets/icon2.png" alt="">
-          <img src="assets/icon3.png" alt="">
-          <img src="assets/icon4.png" alt="">
-          <img src="assets/icon1.png" alt="">
-          <img src="assets/icon2.png" alt="">
-          <img src="assets/icon3.png" alt="">
-          <img src="assets/icon4.png" alt="">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== VIEW 2: MENU ===================== -->
-  <section class="view" id="view-menu">
-    <div class="bg-blob b1"></div>
-
-    <div class="topbar"><b>Adiosection</b>, 2026. All right reserved.</div>
-
-    <div class="menu-header">
-      <div class="logo-wrap">
-        <img src="assets/logo.png" alt="Adiosection logo">
-      </div>
-      <p class="menu-sub">Pick a card, <span>get to know us</span>.</p>
+    <!-- DAY 1 — completed -->
+    <div class="card bg-blue completed" data-day="1">
+      <img class="star" src="assets/star.png" alt="" onerror="this.style.display='none'">
+      <div class="done-label">WELL<br>DONE!</div>
     </div>
 
-    <div class="menu-grid">
-      <button class="menu-card blue" onclick="goTo('view-concept')">
-        <span class="badge">★</span>
-        <div class="icon-stage"><img class="center-icon" src="assets/icon1.png" alt=""></div>
-        <h3>Concept?</h3>
-        <p>Get to know us more!</p>
-        <img class="sticker" src="assets/icon3.png" alt="">
-      </button>
-
-      <button class="menu-card yellow" onclick="goTo('view-caretaker')">
-        <span class="badge">◐</span>
-        <div class="icon-stage"><img class="center-icon" src="assets/icon2.png" alt=""></div>
-        <h3>Hello, Caretaker!</h3>
-        <p>The people behind all of these.</p>
-        
-        <img class="sticker" src="assets/icon4.png" alt="">
-      </button>
-
-      <button class="menu-card yellow" onclick="goTo('view-regulations')">
-        <span class="badge">♥</span>
-        <div class="icon-stage"><img class="center-icon" src="assets/icon4.png" alt=""></div>
-        <h3>Regulations!</h3>
-        <p>I'd like to let you know it first.</p>
-        <img class="sticker" src="assets/icon2.png" alt="">
-      </button>
-
-      <button class="menu-card blue" onclick="goTo('view-join')">
-        <span class="badge">✿</span>
-        <div class="icon-stage"><img class="center-icon" src="assets/icon3.png" alt=""></div>
-        <h3>How to Join?</h3>
-        <p>Can you perhaps take a look?</p>
-        <img class="sticker" src="assets/icon1.png" alt="">
-      </button>
+    <!-- DAY 2 -->
+    <div class="card bg-yellow" data-day="2" onclick="goToDay(2)">
+      <img class="icon" src="assets/icon1.png" alt="Day 2 icon">
+      <div class="day-label">DAY 2</div>
     </div>
 
-    <p class="footer-note">tap a card to open</p>
-
-    <div class="spacer"></div>
-
-    <div class="nav-footer">
-      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
-      </button>
-      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      </button>
-    </div>
-  </section>
-
-  <!-- ===================== VIEW 3: CONCEPT ===================== -->
-  <section class="view" id="view-concept">
-    <div class="page-banner blue">
-      <button class="back-btn" onclick="goTo('view-menu')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <span class="page-title">Concept?</span>
-      <img class="banner-icon" src="assets/icon1.png" alt="">
+    <!-- DAY 3 -->
+    <div class="card bg-blue" data-day="3" onclick="goToDay(3)">
+      <img class="icon" src="assets/icon2.png" alt="Day 3 icon">
+      <div class="day-label">DAY 3</div>
     </div>
 
-    <div class="concept-body">
-      <div class="concept-logo"><img src="assets/logo.png" alt="Adiosection logo"></div>
-      <p>Have you ever felt so miserable that you couldn't even bring yourself to face the sunlight?</p>
-      <p>As if all you could do was sit with your sorrow, letting it consume you day after day. But maybe that's simply what it means to be alive. Regrets are inevitable, and so are the days when everything feels unbearably heavy. It's okay to feel lost. It's okay if you're not ready to move on just yet.</p>
-      <p>We're only human, <i>after all</i>.</p>
-      <p>You know what? The good thing about time is&hellip; it never stands still. 젊음은 가 아픔도 지나가. No matter how endless today may feel, tomorrow always finds its way to you.</p>
-      <p>So keep going. Some days may feel heavier than others, but every step counts. One day, you'll look back and realize the weight you've been carrying is no longer yours to bear.</p>
+    <!-- DAY 4 -->
+    <div class="card bg-yellow" data-day="4" onclick="goToDay(4)">
+      <img class="icon" src="assets/icon3.png" alt="Day 4 icon">
+      <div class="day-label">DAY 4</div>
     </div>
 
-    <p class="pull-quote">And perhaps, the only thing left to do is say, "Adios."</p>
-
-    <div class="nav-footer">
-      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
-      </button>
-      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      </button>
-    </div>
-  </section>
-
-  <!-- ===================== VIEW 4: CARETAKER ===================== -->
-  <section class="view" id="view-caretaker">
-    <div class="page-banner yellow">
-      <button class="back-btn" onclick="goTo('view-menu')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <span class="page-title">Hello, Caretaker!</span>
-      <img class="banner-icon" src="assets/icon2.png" alt="">
+    <!-- DAY 5 -->
+    <div class="card bg-blue" data-day="5" onclick="goToDay(5)">
+      <img class="icon" src="assets/icon4.png" alt="Day 5 icon">
+      <div class="day-label">DAY 5</div>
     </div>
 
-    <p class="reg-intro" style="text-align:center;">The people behind all of these.</p>
-
-    <div class="ct-list">
-      <div class="ct-card">
-        <img src="assets/ct1.png" alt="Malik">
-        <div class="ct-name">Malik</div>
-        <div class="ct-role">Caretaker</div>
-      </div>
-      <div class="ct-card">
-        <img src="assets/ct2.png" alt="Luka">
-        <div class="ct-name">Luka</div>
-        <div class="ct-role">Caretaker</div>
-      </div>
-      <div class="ct-card">
-        <img src="assets/ct3.png" alt="Heri">
-        <div class="ct-name">Heri</div>
-        <div class="ct-role">Caretaker</div>
-      </div>
+    <!-- DAY 6 -->
+    <div class="card bg-yellow" data-day="6" onclick="goToDay(6)">
+      <img class="icon" src="assets/icon5.png" alt="Day 6 icon">
+      <div class="day-label">DAY 6</div>
     </div>
 
-    <div class="nav-footer">
-      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
-      </button>
-      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      </button>
-    </div>
-  </section>
+  </div>
 
-  <!-- ===================== VIEW 5: REGULATIONS ===================== -->
-  <section class="view" id="view-regulations">
-    <div class="page-banner blue">
-      <button class="back-btn" onclick="goTo('view-menu')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <span class="page-title">Regulations!</span>
-      <img class="banner-icon" src="assets/icon3.png" alt="">
-    </div>
-
-    <p class="reg-intro" style="text-align:center;">Thinking of joining adiosection? Make sure you've read and understood all the regulations below first!</p>
-
-    <ul class="reg-list">
-      <li><span class="reg-num">1</span><span><strong>One account per head.</strong> Twins are only allowed if the face claim has a real life twin.</span></li>
-      <li><span class="reg-num">2</span><span>We accept <strong>ALL STARS</strong> face claims born <strong>no later than 2006</strong>. However, face claims linked to <strong>Zionism or current controversies are strictly prohibited.</strong></span></li>
-      <li><span class="reg-num">3</span><span>Adiosection will only last for <strong>6 days</strong>, so make the most of your slot and stay active. A minimum of <strong>45 tweets</strong> is required on Day 1, and <strong>25 tweets</strong> on each following day.</span></li>
-      <li><span class="reg-num">4</span><span>Members who are <strong>inactive for 24 hours</strong> without prior notice may be unverified. If you can't participate in any activities, kindly let us know through the base or by contacting one of the admins in advance.</span></li>
-      <li><span class="reg-num">5</span><span>We strictly prohibit any discussion of <strong>inside jokes, drama, reunions, or CIC. Doxxing</strong> and the sharing of personal information (e.g., cyber accounts, Discord, Roblox, etc.) are also prohibited for the duration of the agency.</span></li>
-      <li><span class="reg-num">6</span><span><strong>Interaction with outsiders is allowed</strong>, provided it doesn't become a two-way interaction. This is to help maintain a comfortable environment for everyone while the agency is running.</span></li>
-      <li><span class="reg-num">7</span><span><strong>Profanity</strong> is acceptable as long as it's not used maliciously. However, <strong>posting or sharing any NSFW, graphic, or explicit content is not allowed</strong> under any circumstances.</span></li>
-    </ul>
-
-    <div class="nav-footer">
-      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
-      </button>
-      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      </button>
-    </div>
-  </section>
-
-  <!-- ===================== VIEW 6: HOW TO JOIN ===================== -->
-  <section class="view" id="view-join">
-    <div class="page-banner yellow">
-      <button class="back-btn" onclick="goTo('view-menu')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#0063c3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <span class="page-title">How to Join?</span>
-      <img class="banner-icon" src="assets/icon4.png" alt="">
-    </div>
-
-    <p class="join-intro" style="text-align:center;">Can you perhaps take a look? Here's how it works:</p>
-
-    <ul class="join-list">
-      <li><span class="join-num">1</span><span>Make sure <strong>@adiosection</strong> is the only account you're following.</span></li>
-      <li><span class="join-num">2</span><span>If you're applying with a recycled account, please post at least <strong>five blank tweets</strong> to clear your timeline.</span></li>
-      <li><span class="join-num">3</span><span>Keep an eye on our timeline and <strong>submit the form</strong> once it's up.</span></li>
-      <li><span class="join-num">4</span><span>You're all set! <strong>Verification</strong> results will be announced afterward, so please wait patiently for further updates.</span></li>
-    </ul>
-
-    <div class="nav-footer">
-      <button class="icon-btn" onclick="goTo('view-menu')" aria-label="Back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
-      </button>
-      <button class="icon-btn" onclick="goTo('view-landing')" aria-label="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      </button>
-    </div>
-  </section>
+  <div class="footer-pill-wrap">
+    <div class="footer-pill"><b>Adiosection;</b> Attendance.</div>
+  </div>
 
 </div>
 
+<!-- OOPS popup (days that aren't unlocked yet) -->
+<div class="modal-backdrop" id="oopsModal">
+  <div class="modal-box">
+    <img src="assets/icon4.png" alt="">
+    <p>Oops, you haven't reached this point yet.</p>
+    <button onclick="closeOops()">OK</button>
+  </div>
+</div>
+
 <script>
-  function goTo(id){
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.getElementById('app').scrollTo({top:0, behavior:'instant'});
-    window.scrollTo({top:0, behavior:'instant'});
+  function goToDay(day){
+    if(day === 2){
+      window.location.href = "game.html";
+      return;
+    }
+    // Days 3–6 are locked until unlocked via the same "completed" template as Day 1
+    document.getElementById('oopsModal').classList.add('open');
+  }
+
+  function closeOops(){
+    document.getElementById('oopsModal').classList.remove('open');
   }
 </script>
+
 </body>
 </html>
