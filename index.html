@@ -88,10 +88,26 @@
   </div>
 </div>
 
+<!-- Name entry popup, shown before Day 2's game starts -->
+<div class="modal-backdrop" id="nameModal">
+  <div class="modal-box">
+    <p>Enter your name</p>
+    <input type="text" id="nameInput" class="name-input" placeholder="Your name" maxlength="30" autocomplete="off">
+    <button onclick="submitName()">Start</button>
+  </div>
+</div>
+
 <script>
+  let pendingDay = null;
+
   function goToDay(day){
     if(day === 2){
-      window.location.href = "game.html";
+      pendingDay = day;
+      const modal = document.getElementById('nameModal');
+      modal.classList.add('open');
+      const input = document.getElementById('nameInput');
+      input.value = '';
+      setTimeout(() => input.focus(), 50);
       return;
     }
     // Days 3–6 are locked until unlocked via the same "completed" template as Day 1
@@ -101,6 +117,17 @@
   function closeOops(){
     document.getElementById('oopsModal').classList.remove('open');
   }
+
+  function submitName(){
+    const input = document.getElementById('nameInput');
+    const name = input.value.trim() || 'Friend';
+    document.getElementById('nameModal').classList.remove('open');
+    window.location.href = `game.html?name=${encodeURIComponent(name)}&day=${pendingDay}`;
+  }
+
+  document.getElementById('nameInput').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') submitName();
+  });
 </script>
 
 </body>
