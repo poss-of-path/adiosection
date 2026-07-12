@@ -37,13 +37,31 @@
 <!-- Congrats popup -->
 <div class="modal-backdrop" id="winModal">
   <div class="modal-box">
-    <img src="assets/star.png" alt="" onerror="this.style.display='none'">
-    <p>Congratulations! you success in jashsk, adios!</p>
+    <img id="winIcon" src="assets/star.png" alt="">
+    <p id="winMessage">Congratulations!</p>
     <button onclick="window.location.href='index.html'">Back to Home</button>
   </div>
 </div>
 
 <script>
+const params = new URLSearchParams(window.location.search);
+const playerName = params.get('name') || 'Friend';
+const dayNumber = params.get('day') || '2';
+
+document.getElementById('winMessage').textContent =
+  `Congratulations, ${playerName}! You've completed Day ${dayNumber} attendance.`;
+
+// If assets/star.png hasn't been added yet, fall back to an emoji so the
+// popup never looks broken/empty.
+document.getElementById('winIcon').addEventListener('error', function(){
+  const fallback = document.createElement('div');
+  fallback.textContent = '⭐';
+  fallback.style.fontSize = '56px';
+  fallback.style.lineHeight = '1';
+  fallback.style.margin = '0 auto 14px';
+  this.replaceWith(fallback);
+});
+
 const WORDS = ["SAYONARA","GOODBYE","ADIOS","ALOHA"];
 // SAYONARA is 8 letters, so 8x8 is the smallest grid every word can fit in.
 const SIZE = 8;
