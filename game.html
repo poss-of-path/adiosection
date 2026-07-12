@@ -44,22 +44,27 @@
 </div>
 
 <script>
-const WORDS = ["HELLO","GOODBYE","ADIOS","ALOHA","SAYONARA"];
-const SIZE = 10;
-const CELL = 34; // px, keep in sync with CSS sizing below
-const COLORS = ["#0063c3", "#f3d141", "#252525"]; // blue, yellow, ink — cycled per word
+const WORDS = ["SAYONARA","GOODBYE","ADIOS","ALOHA"];
+// SAYONARA is 8 letters, so 8x8 is the smallest grid every word can fit in.
+const SIZE = 8;
+const CELL = 40; // px, keep in sync with CSS sizing below
+const COLORS = ["#0063c3", "#f3d141"]; // blue, yellow — cycled per word
 
 let grid = [];
 let placements = {}; // word -> {row,col,dir,len}
 let foundWords = new Set();
 
-function buildGrid(){
-  grid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+function tryBuildGrid(){
+  const localGrid = Array.from({length: SIZE}, () => Array(SIZE).fill(null));
+  const localPlacements = {};
   const dirs = [[0,1],[1,0],[1,1],[1,-1]];
 
-  for(const word of WORDS){
+  // place the longest words first — much more likely to succeed on a tight grid
+  const ordered = [...WORDS].sort((a,b) => b.length - a.length);
+
+  for(const word of ordered){
     let placed = false, attempts = 0;
-    while(!placed && attempts < 800){
+    while(!placed && attempts < 2000){
       attempts++;
       const dir = dirs[Math.floor(Math.random()*dirs.length)];
       const row = Math.floor(Math.random()*SIZE);
@@ -71,32 +76,51 @@ function buildGrid(){
       let ok = true;
       for(let i=0; i<word.length; i++){
         const r = row + dir[0]*i, c = col + dir[1]*i;
-        if(grid[r][c] && grid[r][c] !== word[i]){ ok = false; break; }
+        if(localGrid[r][c] && localGrid[r][c] !== word[i]){ ok = false; break; }
       }
       if(!ok) continue;
 
       for(let i=0; i<word.length; i++){
         const r = row + dir[0]*i, c = col + dir[1]*i;
-        grid[r][c] = word[i];
+        localGrid[r][c] = word[i];
       }
-      placements[word] = {row, col, dir, len: word.length};
+      localPlacements[word] = {row, col, dir, len: word.length};
       placed = true;
     }
+    if(!placed) return null; // this attempt failed, caller will retry
   }
 
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   for(let r=0; r<SIZE; r++)
     for(let c=0; c<SIZE; c++)
-      if(!grid[r][c]) grid[r][c] = alphabet[Math.floor(Math.random()*26)];
+      if(!localGrid[r][c]) localGrid[r][c] = alphabet[Math.floor(Math.random()*26)];
+
+  return { grid: localGrid, placements: localPlacements };
+}
+
+function buildGrid(){
+  let result = null;
+  let tries = 0;
+  while(!result && tries < 200){
+    result = tryBuildGrid();
+    tries++;
+  }
+  if(!result){
+    // extremely unlikely fallback: just retry once more without giving up
+    result = tryBuildGrid() || { grid: Array.from({length: SIZE}, () => Array(SIZE).fill('A')), placements: {} };
+  }
+  grid = result.grid;
+  placements = result.placements;
 }
 
 function renderWordBank(){
   const bank = document.getElementById('wordBank');
   bank.innerHTML = '';
-  WORDS.forEach(w => {
+  WORDS.forEach((w, i) => {
     const chip = document.createElement('div');
     chip.className = 'word-chip';
     chip.id = 'chip-' + w;
+    chip.style.setProperty('--chip-color', COLORS[i % COLORS.length]);
     chip.textContent = w;
     bank.appendChild(chip);
   });
@@ -213,7 +237,7 @@ function drawPreview(a, b){
   line.setAttribute("class", "preview-line trace-stroke");
   line.setAttribute("x1", p1.x); line.setAttribute("y1", p1.y);
   line.setAttribute("x2", p2.x); line.setAttribute("y2", p2.y);
-  line.setAttribute("stroke", "#252525");
+  line.setAttribute("stroke", "#0063c3");
   line.setAttribute("stroke-width", CELL*0.55);
   line.setAttribute("opacity", "0.18");
   svg.appendChild(line);
