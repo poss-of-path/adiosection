@@ -38,6 +38,9 @@ html, body{
   padding: 40px 28px 48px;
   min-height: 100vh;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* ---------- Header ---------- */
@@ -49,9 +52,9 @@ html, body{
 }
 
 .logo-wrap img{
-  max-width: 50%;
+  max-width: 62%;
   height: auto;
-  max-height: 90px;
+  max-height: 132px;
   width: auto;
   object-fit: contain;
 }
@@ -106,21 +109,25 @@ h1.title{
 .card.bg-blue{ background: var(--blue); }
 .card.bg-yellow{ background: var(--yellow); }
 
-/* Icon + label are absolutely positioned with fixed inset percentages
-   (not width/height percentages) so sizing never depends on the parent
-   having a "definite height" — this is what made icons stretch the
-   card out of square before. The card's size is fixed purely by the
-   padding-top square trick above + the grid column width. */
-.card .icon{
+/* Icon sits inside a plain <div> "frame" that's absolutely positioned
+   with fixed inset percentages. Doing the inset math on a plain div
+   (not the <img> itself) avoids a browser edge case where an <img>
+   with an intrinsic ratio + auto width/height + all 4 offsets set can
+   collapse to 0×0 and vanish. The image then just fills its frame. */
+.card .icon-frame{
   position: absolute;
   top: 12%;
   left: 14%;
   right: 14%;
   bottom: 30%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
   pointer-events: none;
+}
+
+.card .icon{
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .card .day-label{
@@ -151,16 +158,20 @@ h1.title{
   inset: 0;
 }
 
-.star-wrap .star{
+.star-wrap .star-frame{
   position: absolute;
   top: 10%;
   left: 10%;
   right: 10%;
   bottom: 10%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
   pointer-events: none;
+}
+
+.star-wrap .star{
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .star-wrap .done-label{
@@ -202,7 +213,7 @@ h1.title{
 @media (max-width: 480px){
   .page{ padding: 22px 18px 18px; }
   .logo-wrap{ margin-bottom: 8px; }
-  .logo-wrap img{ max-height: 58px; }
+  .logo-wrap img{ max-height: 92px; }
   h1.title{ font-size: 26px; margin: 2px 0 6px; }
   .subtitle{ font-size: 11px; margin-bottom: 16px; }
   .grid{ gap: 8px; }
